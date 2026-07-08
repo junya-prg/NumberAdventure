@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct NumberAdventureApp: App {
+    init() {
+        AdManager.shared.initialize()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

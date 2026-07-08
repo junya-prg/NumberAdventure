@@ -1,0 +1,30 @@
+# Xcode
+# =========================
+build/
+DerivedData/
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+libexec
+SharedPrecompiledHeaders
+
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+
+# Swift Package Manager
+# =========================
+.build/
+.swiftpm/
+
+# Log files
+# =========================
+build_log.txt
+*.log

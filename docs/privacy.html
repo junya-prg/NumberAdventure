@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プライバシーポリシー | すうじアドベンチャー</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f28c38;
+            --primary-glow: rgba(242, 140, 56, 0.15);
+            --bg-light: #fdfcf7;
+            --text-light: #4a3e3d;
+            --card-light: #ffffff;
+            --border-light: #f0e6df;
+            
+            --bg-dark: #121110;
+            --text-dark: #e6dfda;
+            --card-dark: #1e1b19;
+            --border-dark: #2d2825;
+            
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Outfit', 'Zen Kaku Gothic New', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: var(--transition);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-dark);
+                color: var(--text-dark);
+            }
+        }
+
+        header {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px 20px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .icon-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            background: white;
+            padding: 2px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .icon-container {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+                background: #2d2825;
+            }
+        }
+
+        .icon-container:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 15px 35px var(--primary-glow);
+        }
+
+        .app-icon {
+            width: 100%;
+            height: 100%;
+            border-radius: 26px;
+            object-fit: cover;
+            display: block;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, var(--primary), #e06c16);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+            padding: 0 20px 60px 20px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: var(--card-light);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            transition: var(--transition);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .card {
+                background-color: var(--card-dark);
+                border: 1px solid var(--border-dark);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        p, li {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            width: 100%;
+            max-width: 800px;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.6;
+            margin-top: auto;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            footer {
+                border-top: 1px solid var(--border-dark);
+            }
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .back-btn::before {
+            content: "←";
+            margin-right: 6px;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover::before {
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="icon-container">
+            <picture>
+                <source srcset="assets/icon_dark.png" media="(prefers-color-scheme: dark)">
+                <img src="assets/icon.png" alt="すうじアドベンチャー アイコン" class="app-icon">
+            </picture>
+        </div>
+        <h1>すうじアドベンチャー</h1>
+        <p class="subtitle">プライバシーポリシー</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>1. 個人情報の収集と利用目的</h2>
+            <p>本アプリ「すうじアドベンチャー」（以下、当アプリ）では、利用者の個人情報を直接取得・収集し、外部サーバーに送信することはありません。当アプリ内で使用するマイク機能や手書き入力エリアのデータは、すべて端末内（ローカル）でのみリアルタイムに音声認識および文字判定処理のために利用され、処理完了後は直ちに破棄されます。</p>
+
+            <h2>2. 広告配信について</h2>
+            <p>当アプリでは、第三者配信による広告サービス（Google AdMob）を利用しています。広告配信事業者は、利用者の興味に応じた広告を表示するために、広告識別子（IDFA / AAID）等の匿名化された識別情報を取得する場合があります。これらの情報は個人を特定するものではありません。</p>
+            <p>広告識別子の取得制限や詳細については、Googleのポリシーまたは端末の設定（トラッキングの許可/制限）をご確認ください。</p>
+            <ul>
+                <li><a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener noreferrer">Google 広告規約とプライバシーポリシー</a></li>
+            </ul>
+
+            <h2>3. マイクおよび音声認識の使用について</h2>
+            <p>当アプリの「よむ」モードでは、発音判定を行うために端末のマイク機能およびAppleの音声認識APIを使用します。これらの音声データは、音声認識処理のためだけに一時的に使用され、当アプリまたは第三者が保存・蓄積することはありません。</p>
+
+            <h2>4. プライバシーポリシーの改定</h2>
+            <p>当アプリは、法令の変更やアプリのアップデートに伴い、本プライバシーポリシーを改定することがあります。改定されたポリシーは、本ページに掲載された時点から効力を生じるものとします。</p>
+
+            <h2>5. お問い合わせ</h2>
+            <p>当アプリのプライバシーポリシーや取り扱いに関するお問い合わせは、紹介ページ（サポートページ）に記載された連絡先までご連絡ください。</p>
+
+            <a href="index.html" class="back-btn">紹介ページに戻る</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Junya Honda. All rights reserved.</p>
+    </footer>
+</body>
+</html>

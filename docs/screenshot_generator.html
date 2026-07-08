@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>App Store Screenshot Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --iphone-w: 800px;
+            --iphone-h: 1626px;
+            --bezel: 24px;
+            --screen-r: 44px;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 1290px;
+            height: 2796px;
+            overflow: hidden;
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            background: #110f1a;
+            color: #fff;
+        }
+
+        /* スクリーンショット全体のコンテナ (1290x2796px 厳密) */
+        .screenshot-container {
+            width: 1290px;
+            height: 2796px;
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 180px;
+            background: linear-gradient(180deg, #1f1a3a 0%, #0d0b18 100%);
+        }
+
+        /* 背景の装飾的な星や光 */
+        .bg-glow {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(242, 140, 56, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: 200px;
+            left: 245px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            width: 1000px;
+            height: 1000px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.12) 0%, rgba(0,0,0,0) 70%);
+            bottom: 100px;
+            left: 145px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 装飾的な星のグラフィック */
+        .star-decor {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 40px;
+            z-index: 2;
+        }
+        
+        .star-1 { top: 120px; left: 150px; font-size: 50px; color: rgba(242, 140, 56, 0.4); }
+        .star-2 { top: 400px; right: 180px; font-size: 35px; color: rgba(255, 255, 255, 0.3); }
+        .star-3 { bottom: 1200px; left: 100px; font-size: 45px; color: rgba(147, 51, 234, 0.4); }
+        .star-4 { bottom: 600px; right: 120px; font-size: 30px; }
+
+        /* テキストエリア */
+        .header-section {
+            text-align: center;
+            z-index: 10;
+            width: 100%;
+            padding: 0 80px;
+            box-sizing: border-box;
+            margin-bottom: 90px;
+        }
+
+        .app-title-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #f28c38;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .app-title-tag img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+        }
+
+        .main-headline {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.3;
+            margin: 0 0 24px 0;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #ffffff 30%, #ffd4b2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .sub-copy {
+            font-size: 38px;
+            font-weight: 700;
+            color: #b3b0c5;
+            margin: 0;
+            line-height: 1.4;
+            max-width: 950px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* iPhone 端末モックアップ */
+        .iphone-frame {
+            position: relative;
+            width: var(--iphone-w);
+            height: var(--iphone-h);
+            background: #000;
+            border-radius: 68px;
+            box-shadow: 
+                0 0 0 6px #2e2a35, 
+                0 0 0 12px #1f1b25,
+                0 30px 100px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            border: var(--bezel) solid #09080c;
+        }
+
+        /* 画面領域 */
+        .iphone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: var(--screen-r);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .iphone-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Dynamic Island */
+        .dynamic-island {
+            position: absolute;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 52px;
+            background: #000;
+            border-radius: 30px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="screenshot-container" id="container">
+        <!-- 背景装飾 -->
+        <div class="bg-glow"></div>
+        <div class="bg-glow-2"></div>
+        <div class="star-decor star-1">★</div>
+        <div class="star-decor star-2">✦</div>
+        <div class="star-decor star-3">★</div>
+        <div class="star-decor star-4">✦</div>
+
+        <!-- ヘッダーセクション -->
+        <div class="header-section">
+            <div class="app-title-tag">
+                <img src="assets/icon.png" alt="Icon">
+                NumberAdventure
+            </div>
+            <h1 class="main-headline" id="mainHeadline">すうじを声に出して読もう！</h1>
+            <p class="sub-copy" id="subCopy">AI音声認識が正しい発音を優しく判定</p>
+        </div>
+
+        <!-- スマホフレーム -->
+        <div class="iphone-frame">
+            <div class="iphone-screen">
+                <div class="dynamic-island"></div>
+                <img src="assets/screenshot_read.png" id="screenshotImg" alt="App Screen">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // クエリパラメータの解析をして表示内容を変更する
+        const params = new URLSearchParams(window.location.search);
+        const page = params.get('page') || 'read';
+
+        const data = {
+            read: {
+                headline: 'すうじを声に出して読もう！',
+                sub: 'AI音声認識がお子様の発音を優しく聞き取って判定',
+                img: 'assets/screenshot_read.png',
+                gradient: 'linear-gradient(180deg, #2a1f4d 0%, #0c0a17 100%)',
+                glowColor: 'rgba(242, 140, 56, 0.15)'
+            },
+            write: {
+                headline: 'なぞってきれいに書く練習！',
+                sub: '手書き文字認識AIが正しいすうじの形をサポート',
+                img: 'assets/screenshot_write.png',
+                gradient: 'linear-gradient(180deg, #1b3d4f 0%, #07121b 100%)',
+                glowColor: 'rgba(56, 189, 242, 0.15)'
+            },
+            play: {
+                headline: 'あそんで覚える数のひみつ！',
+                sub: '点つなぎや足し算ブロックゲームで直感的に学ぶ',
+                img: 'assets/screenshot_play.png',
+                gradient: 'linear-gradient(180deg, #441f4d 0%, #170a1d 100%)',
+                glowColor: 'rgba(236, 72, 153, 0.15)'
+            },
+            history: {
+                headline: 'がんばった学習履歴をきろく！',
+                sub: 'カレンダーと星のご褒美で毎日のモチベーション持続',
+                img: 'assets/screenshot_history.png',
+                gradient: 'linear-gradient(180deg, #1d3c26 0%, #06140b 100%)',
+                glowColor: 'rgba(34, 197, 94, 0.15)'
+            }
+        };
+
+        const pageData = data[page] || data.read;
+        document.getElementById('mainHeadline').innerText = pageData.headline;
+        document.getElementById('subCopy').innerText = pageData.sub;
+        document.getElementById('screenshotImg').src = pageData.img;
+        
+        // 背景と光のカラー調整
+        const container = document.getElementById('container');
+        container.style.background = pageData.gradient;
+        document.querySelector('.bg-glow').style.background = `radial-gradient(circle, ${pageData.glowColor} 0%, rgba(0,0,0,0) 70%)`;
+    </script>
+</body>
+</html>

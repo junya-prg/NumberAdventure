@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>すうじアドベンチャー | AIと楽しく学ぶ子供向け数字学習アプリ</title>
+    <meta name="description" content="AI音声認識と手書き認識で、数字の「よむ・かく・あそぶ」が楽しく身につく知育アプリ「すうじアドベンチャー」の公式サイトです。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f28c38;
+            --primary-light: #fbebd8;
+            --primary-glow: rgba(242, 140, 56, 0.2);
+            --bg-light: #fdfcf7;
+            --text-light: #4a3e3d;
+            --card-light: #ffffff;
+            --border-light: #f0e6df;
+            
+            --bg-dark: #121110;
+            --text-dark: #e6dfda;
+            --card-dark: #1e1b19;
+            --border-dark: #2d2825;
+            
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Outfit', 'Zen Kaku Gothic New', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            transition: var(--transition);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--bg-dark);
+                color: var(--text-dark);
+            }
+        }
+
+        /* 共通コンテナ */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            box-sizing: border-box;
+        }
+
+        /* ナビゲーション */
+        nav {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            nav {
+                border-bottom: 1px solid var(--border-dark);
+            }
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .nav-brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+        }
+
+        .nav-links a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            margin-left: 24px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            padding: 80px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px 0 60px 0;
+            }
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 550px;
+        }
+
+        .hero-logo-wrapper {
+            margin-bottom: 24px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .hero-logo {
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .hero-logo:hover {
+            transform: scale(1.05) rotate(3deg);
+        }
+
+        .hero-content h1 {
+            font-size: 2.75rem;
+            font-weight: 900;
+            line-height: 1.25;
+            margin: 0 0 18px 0;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary), #e06c16);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            opacity: 0.85;
+            margin-bottom: 30px;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* モックアップ */
+        .phone-mockup {
+            width: 280px;
+            height: 570px;
+            border: 10px solid #2d2825;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            background: #000;
+            overflow: hidden;
+            position: relative;
+            transform: rotate(-3deg);
+            transition: var(--transition);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .phone-mockup {
+                border-color: #3d3632;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            }
+        }
+
+        .phone-mockup:hover {
+            transform: rotate(0deg) scale(1.03);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            object-fit: cover;
+        }
+
+        /* 特徴セクション */
+        .features {
+            padding: 80px 0;
+            background-color: var(--primary-light);
+            border-radius: 40px;
+            margin-bottom: 60px;
+            transition: var(--transition);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .features {
+                background-color: #1e1713;
+            }
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .features-header h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0 0 10px 0;
+            color: var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--card-light);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .feature-card {
+                background: var(--card-dark);
+                border-color: var(--border-dark);
+            }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px var(--primary-glow);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* セーフティ・安心 */
+        .safety {
+            padding: 60px 0;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .safety h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .safety-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .safety-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .safety-item {
+            flex: 1;
+        }
+
+        .safety-item h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .safety-item p {
+            font-size: 0.9rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* フッター */
+        footer {
+            background-color: #1e1b19;
+            color: #e6dfda;
+            padding: 50px 0;
+            margin-top: 80px;
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            color: #bfaea5;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-contact {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 0.85rem;
+            opacity: 0.5;
+        }
+
+        /* AppStoreボタン */
+        .app-store-btn {
+            display: inline-flex;
+            align-items: center;
+            background: #000;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            border: 1px solid #333;
+        }
+
+        .app-store-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(242, 140, 56, 0.3);
+            background: #111;
+        }
+
+        .app-store-btn svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: #fff;
+        }
+
+        .btn-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .btn-subtext {
+            font-size: 0.65rem;
+            font-weight: normal;
+            opacity: 0.8;
+        }
+
+        .btn-maintext {
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="container">
+        <div class="nav-brand">
+            <img src="assets/icon.png" alt="すうじアドベンチャーロゴ">
+            <span>すうじアドベンチャー</span>
+        </div>
+        <div class="nav-links">
+            <a href="privacy.html">プライバシーポリシー</a>
+        </div>
+    </nav>
+
+    <header class="container hero">
+        <div class="hero-content">
+            <div class="hero-logo-wrapper">
+                <picture>
+                    <source srcset="assets/icon_dark.png" media="(prefers-color-scheme: dark)">
+                    <img src="assets/icon.png" alt="すうじアドベンチャー アプリアイコン" class="hero-logo">
+                </picture>
+            </div>
+            <h1>AIと一緒に、<br>すうじの大冒険へ出かけよう！</h1>
+            <p>「すうじアドベンチャー」は、声に出して、指で書いて、楽しく遊べる、新感覚の子供向け数字学習アプリです。最先端の手書き認識＆音声判定AIがお子様の成長を優しくサポートします。</p>
+            
+            <a href="#" class="app-store-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,22C14.32,22.05 13.89,21.24 12.37,21.24C10.84,21.24 10.37,21.97 9.1,22.03C7.79,22.08 6.8,20.73 5.96,19.5C4.26,17 2.96,12.4 4.71,9.37C5.58,7.87 7.13,6.92 8.81,6.9C10.08,6.87 11.28,7.76 12.06,7.76C12.83,7.76 14.3,6.69 15.82,6.85C16.46,6.87 18.25,7.11 19.46,8.87C19.36,8.93 17.15,10.22 17.18,12.8C17.2,15.9 19.82,16.92 19.85,16.93C19.83,17 19.42,18.42 18.71,19.5M15.97,4.17C16.63,3.37 17.07,2.28 16.95,1C16,1.04 14.9,1.6 14.24,2.38C13.68,3.04 13.19,4.14 13.34,5.39C14.39,5.47 15.4,4.88 15.97,4.17Z"/>
+                </svg>
+                <div class="btn-text">
+                    <span class="btn-subtext">App Store からダウンロード</span>
+                    <span class="btn-maintext">無料ダウンロード</span>
+                </div>
+            </a>
+        </div>
+        <div class="hero-image">
+            <div class="phone-mockup">
+                <!-- 後ほど作成する実際のスクリーンショット(よむモード)をはめ込みます -->
+                <img src="assets/screenshot_read.png" alt="アプリ画面 よむ" class="phone-screen" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'280\' height=\'570\'><rect width=\'280\' height=\'570\' fill=\'%23f28c38\'/><text x=\'50%\' y=\'50%\' font-size=\'20\' fill=\'white\' font-family=\'sans-serif\' text-anchor=\'middle\' dominant-baseline=\'middle\'>すうじアドベンチャー</text></svg>'">
+            </div>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="container">
+            <div class="features-header">
+                <h2>4つの楽しいアドベンチャー</h2>
+                <p>お子様の成長に合わせた豊富な学習モードを用意しています。</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎤</div>
+                    <h3>よむ (音声判定)</h3>
+                    <p>画面の数字をマイクに向かって声に出して読みます。AIが正しい発音か優しく聞き取ります。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✏️</div>
+                    <h3>かく (手書き判定)</h3>
+                    <p>指やタッチペンで画面に数字を書きます。AIが丁寧に書けているかを判定します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>あそぶ (知育ゲーム)</h3>
+                    <p>「点つなぎ」や「足し算のすうじ合体」など、ゲーム感覚で直感的に数の仕組みを学びます。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>きろく (カレンダー)</h3>
+                    <p>毎日の学習状況やがんばってもらった「星」の数をカレンダーで記録。やる気を持続させます。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container safety">
+        <h2>お子様が安心して使える設計</h2>
+        <div class="safety-grid">
+            <div class="safety-item">
+                <h3>🔒 個人情報は収集しません</h3>
+                <p>マイク入力や手書きした文字は、すべて端末内でリアルタイムに処理されるため、外部へ送信される心配はありません。</p>
+            </div>
+            <div class="safety-item">
+                <h3>🛡️ 誤タップを防ぐ広告配置</h3>
+                <p>お子様が間違ってタップしにくい位置に安全に広告を配置しており、安心して遊んでいただけます。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-content">
+            <img src="assets/icon.png" alt="すうじアドベンチャーロゴ" class="footer-logo">
+            <h3>すうじアドベンチャー</h3>
+            <p>声に出して、書いて、楽しく学ぶ数字学習ゲーム</p>
+            <div class="footer-links">
+                <a href="privacy.html">プライバシーポリシー</a>
+            </div>
+            <div class="footer-contact">
+                お問い合わせ: contact.numberadventure@gmail.com
+            </div>
+            <p>&copy; 2026 Junya Honda. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
