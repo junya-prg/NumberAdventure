@@ -1,0 +1,102 @@
+{
+  "identifier" : "E2B9611D",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayVersion" : 1,
+      "familyShareable" : false,
+      "internalID" : "A1B2C3D4",
+      "localizations" : [
+        {
+          "description" : "開発者にコーヒーを一杯差し入れします",
+          "displayName" : "プチ応援",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "jp.junya.NumberAdventure.support_160",
+      "referenceName" : "プチ応援",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayVersion" : 1,
+      "familyShareable" : false,
+      "internalID" : "B2C3D4E5",
+      "localizations" : [
+        {
+          "description" : "開発者にケーキセットを差し入れします",
+          "displayName" : "しっかり応援",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "jp.junya.NumberAdventure.support_480",
+      "referenceName" : "しっかり応援",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayVersion" : 1,
+      "familyShareable" : false,
+      "internalID" : "C3D4E5F6",
+      "localizations" : [
+        {
+          "description" : "アプリの追加機能を全力で開発します！",
+          "displayName" : "たっぷり応援",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "jp.junya.NumberAdventure.support_1000",
+      "referenceName" : "たっぷり応援",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "ja",
+    "_storefront" : "JPN",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Group Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Billing Agreement"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
