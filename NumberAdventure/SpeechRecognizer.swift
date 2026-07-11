@@ -32,6 +32,7 @@ class SpeechRecognizer: ObservableObject {
     init() {
         self.recognizer = SFSpeechRecognizer(locale: Locale(identifier: "ja-JP"))
         
+        #if !targetEnvironment(simulator)
         Task {
             do {
                 guard await SFSpeechRecognizer.hasAuthorizationToRecognize() else {
@@ -48,6 +49,7 @@ class SpeechRecognizer: ObservableObject {
                 }
             }
         }
+        #endif
     }
     
     deinit {

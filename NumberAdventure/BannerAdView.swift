@@ -11,9 +11,16 @@ import GoogleMobileAds
 
 struct BannerAdView: View {
     var body: some View {
+        #if targetEnvironment(simulator)
+        // シミュレータ上（スクリーンショット撮影時など）は広告を非表示にしてUIを綺麗に保つ
+        EmptyView()
+            .frame(height: 0)
+        #else
+        // 実機（本番配信）のみ広告を表示
         BannerViewControllerRepresentable()
             .frame(height: GADAdSizeBanner.size.height)
             .background(Color.clear)
+        #endif
     }
 }
 
