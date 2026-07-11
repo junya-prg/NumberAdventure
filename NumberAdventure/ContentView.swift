@@ -1,5 +1,7 @@
 import SwiftUI
 import PencilKit
+import StoreKit
+import Combine
 
 // MARK: - Color Extensions for Light/Dark Mode
 extension Color {
@@ -2129,6 +2131,8 @@ struct TipJarView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     
+    @ObservedObject var storeManager = StoreManager.shared
+    
     @State private var isProcessing = false
     @State private var showSuccess = false
     @State private var successScale: CGFloat = 0.5
@@ -2245,35 +2249,39 @@ struct TipJarView: View {
                             }
                             
                             // プランの選択肢
-                            VStack(spacing: 16) {
-                                supportPlanCard(
-                                    emoji: "☕️",
-                                    title: "プチ応援",
-                                    description: "開発者にコーヒーを一杯差し入れします",
-                                    price: "¥160"
-                                ) {
-                                    triggerPurchase(planName: "プチ応援")
+                            if storeManager.products.isEmpty {
+                                VStack(spacing: 15) {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                                        .scaleEffect(1.2)
+                                    Text("商品を読み込み中...")
+                                        .font(.system(.body, design: .rounded))
+                                        .foregroundColor(.secondary)
                                 }
-                                
-                                supportPlanCard(
-                                    emoji: "🍰",
-                                    title: "しっかり応援",
-                                    description: "開発者にケーキセットを差し入れします",
-                                    price: "¥480"
-                                ) {
-                                    triggerPurchase(planName: "しっかり応援")
+                                .padding(.top, 40)
+                            } else {
+                                VStack(spacing: 16) {
+                                    ForEach(storeManager.products) { product in
+                                        let emoji: String = {
+                                            if product.id.contains("_160") { return "☕️" }
+                                            if product.id.contains("_480") { return "🍰" }
+                                            return "🚀"
+                                        }()
+                                        
+                                        supportPlanCard(
+                                            emoji: emoji,
+                                            title: product.displayName,
+                                            description: product.description,
+                                            price: product.displayPrice
+                                        ) {
+                                            Task {
+                                                await buy(product)
+                                            }
+                                        }
+                                    }
                                 }
-                                
-                                supportPlanCard(
-                                    emoji: "🚀",
-                                    title: "たっぷり応援",
-                                    description: "アプリの追加機能を全力で開発します！",
-                                    price: "¥1,000"
-                                ) {
-                                    triggerPurchase(planName: "たっぷり応援")
-                                }
+                                .padding(.horizontal, 20)
                             }
-                            .padding(.horizontal, 20)
                         }
                         .padding(.bottom, 30)
                     }
@@ -2303,6 +2311,11 @@ struct TipJarView: View {
                         }
                     }
                 )
+            }
+        }
+        .onAppear {
+            Task {
+                await storeManager.loadProducts()
             }
         }
     }
@@ -2350,12 +2363,12 @@ struct TipJarView: View {
         }
     }
     
-    private func triggerPurchase(planName: String) {
+    private func buy(_ product: Product) async {
         isProcessing = true
+        let success = await storeManager.purchase(product)
+        isProcessing = false
         
-        // 1.5秒後に成功画面へ
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            isProcessing = false
+        if success {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.7, blendDuration: 0)) {
                 showSuccess = true
             }
@@ -2422,5 +2435,78 @@ struct PKDrawingPreview: View {
         )
         
         return drawing.image(from: cropRect, scale: 2.0)
+    }
+}
+
+// MARK: - StoreKit 2 課金マネージャー
+@MainActor
+class StoreManager: ObservableObject {
+    @Published var products: [Product] = []
+    
+    private let productIDs = [
+        "jp.junya.NumberAdventure.support_160",
+        "jp.junya.NumberAdventure.support_480",
+        "jp.junya.NumberAdventure.support_1000"
+    ]
+    
+    static let shared = StoreManager()
+    private var transactionListener: Task<Void, Error>?
+    
+    init() {
+        transactionListener = Task {
+            for await result in StoreKit.Transaction.updates {
+                await handle(transactionResult: result)
+            }
+        }
+    }
+    
+    deinit {
+        transactionListener?.cancel()
+    }
+    
+    func loadProducts() async {
+        do {
+            let loadedProducts = try await Product.products(for: productIDs)
+            self.products = loadedProducts.sorted(by: { $0.price < $1.price })
+        } catch {
+            print("Failed to load products from App Store: \(error)")
+        }
+    }
+    
+    func purchase(_ product: Product) async -> Bool {
+        do {
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verification):
+                switch verification {
+                case .verified(let transaction):
+                    await transaction.finish()
+                    return true
+                case .unverified:
+                    print("Transaction failed verification.")
+                    return false
+                }
+            case .pending:
+                print("Transaction pending.")
+                return false
+            case .userCancelled:
+                print("User cancelled purchase.")
+                return false
+            @unknown default:
+                return false
+            }
+        } catch {
+            print("Purchase failed with error: \(error)")
+            return false
+        }
+    }
+    
+    private func handle(transactionResult: VerificationResult<StoreKit.Transaction>) async {
+        switch transactionResult {
+        case .verified(let transaction):
+            await transaction.finish()
+        case .unverified:
+            break
+        }
     }
 }
