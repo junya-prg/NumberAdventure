@@ -15,9 +15,9 @@
           "locale" : "ja"
         }
       ],
-      "productID" : "jp.junya.NumberAdventure.support_160",
+      "productID" : "support_160",
       "referenceName" : "プチ応援",
-      "type" : "NonConsumable"
+      "type" : "Consumable"
     },
     {
       "displayVersion" : 1,
@@ -30,9 +30,9 @@
           "locale" : "ja"
         }
       ],
-      "productID" : "jp.junya.NumberAdventure.support_480",
+      "productID" : "support_480",
       "referenceName" : "しっかり応援",
-      "type" : "NonConsumable"
+      "type" : "Consumable"
     },
     {
       "displayVersion" : 1,
@@ -45,9 +45,9 @@
           "locale" : "ja"
         }
       ],
-      "productID" : "jp.junya.NumberAdventure.support_1000",
+      "productID" : "support_1000",
       "referenceName" : "たっぷり応援",
-      "type" : "NonConsumable"
+      "type" : "Consumable"
     }
   ],
   "settings" : {

@@ -2441,9 +2441,9 @@ class StoreManager: ObservableObject {
     @Published var products: [Product] = []
     
     private let productIDs = [
-        "jp.junya.NumberAdventure.support_160",
-        "jp.junya.NumberAdventure.support_480",
-        "jp.junya.NumberAdventure.support_1000"
+        "support_160",
+        "support_480",
+        "support_1000"
     ]
     
     var plans: [SupportPlan] {
@@ -2466,21 +2466,21 @@ class StoreManager: ObservableObject {
             // 本物の商品ロードに失敗、または待機中のためのダミー（シミュレータ＆審査スクリーンショット用）
             return [
                 SupportPlan(
-                    id: "jp.junya.NumberAdventure.support_160",
+                    id: "support_160",
                     displayName: "プチ応援",
                     description: "開発者にコーヒーを一杯差し入れします",
                     displayPrice: "¥160",
                     rawProduct: nil
                 ),
                 SupportPlan(
-                    id: "jp.junya.NumberAdventure.support_480",
+                    id: "support_480",
                     displayName: "しっかり応援",
                     description: "開発者にケーキセットを差し入れします",
                     displayPrice: "¥480",
                     rawProduct: nil
                 ),
                 SupportPlan(
-                    id: "jp.junya.NumberAdventure.support_1000",
+                    id: "support_1000",
                     displayName: "たっぷり応援",
                     description: "アプリの追加機能を全力で開発します！",
                     displayPrice: "¥1,000",
