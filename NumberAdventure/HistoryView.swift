@@ -14,31 +14,31 @@ struct HistoryView: View {
     
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
+            ZStack {
                 Color.appBackground(for: colorScheme)
                     .ignoresSafeArea()
                 
-                ScrollView {
-                    VStack(spacing: 16) {
-                        // 今月のサマリーカード
-                        summaryCard()
-                            .padding(.horizontal)
-                        
-                        // カレンダーカード
-                        calendarCard()
-                            .padding(.horizontal)
-                        
-                        // 選択日の詳細履歴
-                        historyListSection()
-                            .padding(.horizontal)
-                            .padding(.bottom, 80) // 広告の高さ(50) + 余白分を確保
+                VStack(spacing: 0) {
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            // 今月のサマリーカード
+                            summaryCard()
+                                .padding(.horizontal)
+                            
+                            // カレンダーカード
+                            calendarCard()
+                                .padding(.horizontal)
+                            
+                            // 選択日の詳細履歴
+                            historyListSection()
+                                .padding(.horizontal)
+                        }
+                        .padding(.top, 8)
                     }
-                    .padding(.top, 8)
+                    
+                    // バナー広告
+                    BannerAdView()
                 }
-                
-                // バナー広告
-                BannerAdView()
-                    .padding(.bottom, 8)
             }
             .navigationTitle("がんばりのきろく")
             .navigationBarTitleDisplayMode(.inline)

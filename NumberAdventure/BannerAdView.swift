@@ -11,16 +11,41 @@ import GoogleMobileAds
 
 struct BannerAdView: View {
     var body: some View {
-        #if targetEnvironment(simulator)
-        // シミュレータ上（スクリーンショット撮影時など）は広告を非表示にしてUIを綺麗に保つ
-        EmptyView()
-            .frame(height: 0)
-        #else
-        // 実機（本番配信）のみ広告を表示
-        BannerViewControllerRepresentable()
-            .frame(height: GADAdSizeBanner.size.height)
-            .background(Color.clear)
-        #endif
+        VStack(spacing: 2) {
+            // 広告ラベル
+            HStack {
+                Text("広告")
+                    .font(.system(size: 10, design: .rounded))
+                    .foregroundColor(.white.opacity(0.4))
+                Spacer()
+            }
+            .padding(.horizontal, 10)
+            .padding(.top, 4)
+            
+            #if targetEnvironment(simulator)
+            // シミュレータ時はプレースホルダーを表示して隙間を確認しやすくする
+            HStack {
+                Spacer()
+                Text("広告プレースホルダー (実機で広告が表示されます)")
+                    .font(.system(size: 11, design: .rounded))
+                    .foregroundColor(.white.opacity(0.3))
+                Spacer()
+            }
+            .frame(height: 50)
+            .background(Color.white.opacity(0.04))
+            .cornerRadius(8)
+            .padding(.horizontal, 8)
+            .padding(.bottom, 6)
+            #else
+            // 実機のみAdMob広告を表示
+            BannerViewControllerRepresentable()
+                .frame(height: GADAdSizeBanner.size.height)
+                .background(Color.clear)
+                .padding(.horizontal, 8)
+                .padding(.bottom, 6)
+            #endif
+        }
+        .background(Color.black.opacity(0.3)) // 半透明の暗い背景
     }
 }
 

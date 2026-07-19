@@ -44,252 +44,436 @@ struct CombineModeView: View {
     }
     
     var body: some View {
-        ZStack {
-            // 背景
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 0.05, green: 0.05, blue: 0.15),
-                    Color(red: 0.1, green: 0.1, blue: 0.25)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+        GeometryReader { geometry in
+            let isLandscape = geometry.size.width > geometry.size.height
             
-            StarryBackgroundView()
-            
-            VStack(spacing: 20) {
-                // 上部ヘッダー
-                HStack {
-                    Button(action: {
-                        completionHandler(false)
-                    }) {
-                        Image(systemName: "chevron.left.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(.white.opacity(0.6))
-                    }
-                    Spacer()
-                    Text("あわせていくつ (レベル \(level))")
-                        .font(.system(.title2, design: .rounded))
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                    Spacer()
-                    Circle().fill(Color.clear).frame(width: 32)
-                }
-                .padding(.horizontal)
+            ZStack {
+                // 背景
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 0.05, green: 0.05, blue: 0.15),
+                        Color(red: 0.1, green: 0.1, blue: 0.25)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
                 
-                if level == 4 {
-                    Text("【 おだい 】 \(targetNumber) に しよう！")
-                        .font(.system(.title3, design: .rounded))
-                        .fontWeight(.black)
-                        .foregroundColor(.yellow)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 24)
-                        .background(Color.white.opacity(0.12))
-                        .cornerRadius(20)
-                } else {
-                    Text("ひだりのカゴに \(initialLeft) あるよ。 あわせて \(targetNumber) にするには？")
-                        .font(.system(.headline, design: .rounded))
-                        .foregroundColor(.yellow)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .background(Color.white.opacity(0.1))
-                        .cornerRadius(18)
-                        .multilineTextAlignment(.center)
-                }
+                StarryBackgroundView()
                 
-                Spacer()
-                
-                if level == 4 {
-                    // レベル4: 位取りのレイアウト (4つのカゴ)
-                    HStack(spacing: 12) {
-                        PlaceValueBasketView(title: "せん", label: "千のくらい", count: $thousandsCount, color: .purple, offset: kagoOffsets[0]) {
-                            thousandsCount = max(0, thousandsCount - 1)
+                VStack(spacing: isLandscape ? 8 : 20) {
+                    // 上部ヘッダー
+                    HStack {
+                        Button(action: {
+                            completionHandler(false)
+                        }) {
+                            Image(systemName: "chevron.left.circle.fill")
+                                .font(.system(size: isLandscape ? 26 : 32))
+                                .foregroundColor(.white.opacity(0.6))
                         }
-                        PlaceValueBasketView(title: "ひゃく", label: "百のくらい", count: $hundredsCount, color: .blue, offset: kagoOffsets[1]) {
-                            hundredsCount = max(0, hundredsCount - 1)
-                        }
-                        PlaceValueBasketView(title: "じゅう", label: "十のくらい", count: $tensCount, color: .green, offset: kagoOffsets[2]) {
-                            tensCount = max(0, tensCount - 1)
-                        }
-                        PlaceValueBasketView(title: "いち", label: "一のくらい", count: $onesCount, color: .orange, offset: kagoOffsets[3]) {
-                            onesCount = max(0, onesCount - 1)
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    let currentTotal = (thousandsCount * 1000) + (hundredsCount * 100) + (tensCount * 10) + onesCount
-                    VStack(spacing: 4) {
-                        Text("いまの かず: \(currentTotal)")
-                            .font(.system(.title2, design: .rounded))
+                        Spacer()
+                        Text("あわせていくつ (レベル \(level))")
+                            .font(.system(isLandscape ? .title3 : .title2, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                        
-                        Text("(\(thousandsCount * 1000) + \(hundredsCount * 100) + \(tensCount * 10) + \(onesCount))")
-                            .font(.system(.caption, design: .rounded))
-                            .foregroundColor(.white.opacity(0.6))
+                        Spacer()
+                        Circle().fill(Color.clear).frame(width: isLandscape ? 26 : 32)
                     }
-                    .padding(.vertical, 10)
-                } else {
-                    // レベル1〜3: 天秤レイアウト
-                    GeometryReader { geo in
-                        let width = geo.size.width
-                        let centerY = geo.size.height * 0.4
-                        
-                        ZStack {
-                            Path { path in
-                                path.move(to: CGPoint(x: width / 2, y: centerY))
-                                path.addLine(to: CGPoint(x: width / 2, y: centerY + 120))
-                            }
-                            .stroke(Color.white.opacity(0.3), lineWidth: 8)
-                            
-                            let leftWeight = CGFloat(initialLeft)
-                            let rightWeight = CGFloat(currentRight)
-                            let angleDegrees = Double(rightWeight - leftWeight) * (level == 3 ? 0.3 : 1.5)
-                            
-                            ZStack {
-                                Rectangle()
-                                    .fill(Color.white.opacity(0.5))
-                                    .frame(width: width * 0.8, height: 6)
-                                
-                                // 左カゴ
-                                VStack(spacing: 4) {
-                                    ZStack {
-                                        BasketShape()
-                                            .fill(Color.blue.opacity(0.2))
-                                            .frame(width: 110, height: 60)
-                                            .overlay(
-                                                BasketShape()
-                                                    .stroke(Color.blue.opacity(0.6), lineWidth: 3)
-                                            )
-                                        
-                                        GemGridView(count: initialLeft)
-                                            .frame(width: 90, height: 50)
-                                    }
-                                    .offset(y: leftBasketOffset)
-                                    
-                                    Text("\(initialLeft)")
-                                        .font(.system(.title3, design: .rounded))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                }
-                                .offset(x: -width * 0.3, y: 30)
-                                
-                                // 右カゴ
-                                VStack(spacing: 4) {
-                                    ZStack(alignment: .topTrailing) {
-                                        BasketShape()
-                                            .fill(Color.pink.opacity(0.2))
-                                            .frame(width: 110, height: 60)
-                                            .overlay(
-                                                BasketShape()
-                                                    .stroke(Color.pink.opacity(0.6), lineWidth: 3)
-                                            )
-                                        
-                                        MixedGemView(gems: addedGems)
-                                            .frame(width: 90, height: 50)
-                                        
-                                        if !addedGems.isEmpty {
-                                            Button(action: {
-                                                removeLastGem()
-                                            }) {
-                                                Image(systemName: "arrow.uturn.backward.circle.fill")
-                                                    .font(.system(size: 26))
-                                                    .foregroundColor(.white)
-                                                    .background(Circle().fill(Color.red))
-                                            }
-                                            .offset(x: 10, y: -10)
+                    .padding(.horizontal)
+                    .padding(.top, isLandscape ? 4 : 0)
+                    
+                    if isLandscape {
+                        // 横向き時の2カラムレイアウト
+                        HStack(spacing: 20) {
+                            // 左側: 天秤またはカゴ
+                            VStack {
+                                if level == 4 {
+                                    HStack(spacing: 8) {
+                                        PlaceValueBasketView(title: "せん", label: "千のくらい", count: $thousandsCount, color: .purple, offset: kagoOffsets[0], isLandscape: true) {
+                                            thousandsCount = max(0, thousandsCount - 1)
+                                        }
+                                        PlaceValueBasketView(title: "ひゃく", label: "百のくらい", count: $hundredsCount, color: .blue, offset: kagoOffsets[1], isLandscape: true) {
+                                            hundredsCount = max(0, hundredsCount - 1)
+                                        }
+                                        PlaceValueBasketView(title: "じゅう", label: "十のくらい", count: $tensCount, color: .green, offset: kagoOffsets[2], isLandscape: true) {
+                                            tensCount = max(0, tensCount - 1)
+                                        }
+                                        PlaceValueBasketView(title: "いち", label: "一のくらい", count: $onesCount, color: .orange, offset: kagoOffsets[3], isLandscape: true) {
+                                            onesCount = max(0, onesCount - 1)
                                         }
                                     }
-                                    .offset(y: rightBasketOffset)
-                                    .onTapGesture {
-                                        removeLastGem()
+                                    .padding(.horizontal, 4)
+                                } else {
+                                    GeometryReader { geo in
+                                        let width = geo.size.width
+                                        let centerY = geo.size.height * 0.4
+                                        
+                                        ZStack {
+                                            Path { path in
+                                                path.move(to: CGPoint(x: width / 2, y: centerY))
+                                                path.addLine(to: CGPoint(x: width / 2, y: centerY + 90))
+                                            }
+                                            .stroke(Color.white.opacity(0.3), lineWidth: 6)
+                                            
+                                            let leftWeight = CGFloat(initialLeft)
+                                            let rightWeight = CGFloat(currentRight)
+                                            let angleDegrees = Double(rightWeight - leftWeight) * (level == 3 ? 0.3 : 1.5)
+                                            
+                                            ZStack {
+                                                Rectangle()
+                                                    .fill(Color.white.opacity(0.5))
+                                                    .frame(width: width * 0.85, height: 4)
+                                                
+                                                // 左カゴ
+                                                VStack(spacing: 2) {
+                                                    ZStack {
+                                                        BasketShape()
+                                                            .fill(Color.blue.opacity(0.2))
+                                                            .frame(width: 85, height: 45)
+                                                            .overlay(
+                                                                BasketShape()
+                                                                    .stroke(Color.blue.opacity(0.6), lineWidth: 2)
+                                                            )
+                                                        
+                                                        GemGridView(count: initialLeft, isLandscape: true)
+                                                            .frame(width: 70, height: 35)
+                                                    }
+                                                    .offset(y: leftBasketOffset)
+                                                    
+                                                    Text("\(initialLeft)")
+                                                        .font(.system(.body, design: .rounded))
+                                                        .fontWeight(.bold)
+                                                        .foregroundColor(.white)
+                                                }
+                                                .offset(x: -width * 0.32, y: 20)
+                                                
+                                                // 右カゴ
+                                                VStack(spacing: 2) {
+                                                    ZStack(alignment: .topTrailing) {
+                                                        BasketShape()
+                                                            .fill(Color.pink.opacity(0.2))
+                                                            .frame(width: 85, height: 45)
+                                                            .overlay(
+                                                                BasketShape()
+                                                                    .stroke(Color.pink.opacity(0.6), lineWidth: 2)
+                                                            )
+                                                        
+                                                        MixedGemView(gems: addedGems, isLandscape: true)
+                                                            .frame(width: 70, height: 35)
+                                                        
+                                                        if !addedGems.isEmpty {
+                                                            Button(action: {
+                                                                removeLastGem()
+                                                            }) {
+                                                                Image(systemName: "arrow.uturn.backward.circle.fill")
+                                                                    .font(.system(size: 20))
+                                                                    .foregroundColor(.white)
+                                                                    .background(Circle().fill(Color.red))
+                                                            }
+                                                            .offset(x: 6, y: -6)
+                                                        }
+                                                    }
+                                                    .offset(y: rightBasketOffset)
+                                                    .onTapGesture {
+                                                        removeLastGem()
+                                                    }
+                                                    
+                                                    Text("\(currentRight)")
+                                                        .font(.system(.body, design: .rounded))
+                                                        .fontWeight(.bold)
+                                                        .foregroundColor(.white)
+                                                }
+                                                .offset(x: width * 0.32, y: 20)
+                                            }
+                                            .rotationEffect(.degrees(angleDegrees), anchor: .center)
+                                            .offset(y: -20)
+                                        }
+                                    }
+                                    .frame(height: 180)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            
+                            // 右側: おだい、操作ボタン、決定ボタン
+                            VStack(spacing: 10) {
+                                if level == 4 {
+                                    Text("【 おだい 】 \(targetNumber)")
+                                        .font(.system(.body, design: .rounded))
+                                        .fontWeight(.black)
+                                        .foregroundColor(.yellow)
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 16)
+                                        .background(Color.white.opacity(0.12))
+                                        .cornerRadius(12)
+                                    
+                                    let currentTotal = (thousandsCount * 1000) + (hundredsCount * 100) + (tensCount * 10) + onesCount
+                                    VStack(spacing: 2) {
+                                        Text("いまのかず: \(currentTotal)")
+                                            .font(.system(.body, design: .rounded))
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                        
+                                        Text("(\(thousandsCount * 1000) + \(hundredsCount * 100) + \(tensCount * 10) + \(onesCount))")
+                                            .font(.system(.caption2, design: .rounded))
+                                            .foregroundColor(.white.opacity(0.6))
                                     }
                                     
-                                    Text("\(currentRight)")
-                                        .font(.system(.title3, design: .rounded))
+                                    HStack(spacing: 8) {
+                                        ControlButton(title: "+1000", color: .purple) { addGemToPlace(0) }
+                                        ControlButton(title: "+100", color: .blue) { addGemToPlace(1) }
+                                    }
+                                    HStack(spacing: 8) {
+                                        ControlButton(title: "+10", color: .green) { addGemToPlace(2) }
+                                        ControlButton(title: "+1", color: .orange) { addGemToPlace(3) }
+                                    }
+                                } else {
+                                    Text("ひだり \(initialLeft) あわせて \(targetNumber) にするには？")
+                                        .font(.system(.caption, design: .rounded))
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.yellow)
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 12)
+                                        .background(Color.white.opacity(0.1))
+                                        .cornerRadius(12)
+                                        .multilineTextAlignment(.center)
+                                    
+                                    HStack(spacing: 12) {
+                                        GemButton(value: 1, icon: "star.fill", label: "1のジェム", color: .orange, isLandscape: true) {
+                                            addValueGem(1)
+                                        }
+                                        
+                                        GemButton(value: 5, icon: "bag.fill", label: "5のふくろ", color: .pink, isLandscape: true) {
+                                            addValueGem(5)
+                                        }
+                                        
+                                        if level >= 2 {
+                                            GemButton(value: 10, icon: "diamond.fill", label: "10のかたまり", color: .cyan, isLandscape: true) {
+                                                addValueGem(10)
+                                            }
+                                        }
+                                    }
+                                    .padding(8)
+                                    .background(Color.white.opacity(0.08))
+                                    .cornerRadius(16)
+                                }
+                                
+                                Button(action: {
+                                    checkAnswer()
+                                }) {
+                                    Text("できた！")
+                                        .font(.system(.body, design: .rounded))
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 12)
+                                        .background(
+                                            LinearGradient(
+                                                colors: [.orange, .yellow],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .cornerRadius(20)
+                                        .shadow(color: .orange.opacity(0.4), radius: 6, y: 3)
                                 }
-                                .offset(x: width * 0.3, y: 30)
+                                .padding(.horizontal, 10)
                             }
-                            .rotationEffect(.degrees(angleDegrees), anchor: .center)
-                            .offset(y: -40)
-                        }
-                    }
-                    .frame(height: 240)
-                }
-                
-                Spacer()
-                
-                // ジェム投入コントロール
-                VStack(spacing: 12) {
-                    if level == 4 {
-                        Text("いれる 位のカゴを タップするか、ジェムを いれてね")
-                            .font(.system(.subheadline, design: .rounded))
-                            .foregroundColor(.white.opacity(0.7))
-                        
-                        HStack(spacing: 12) {
-                            ControlButton(title: "+1000", color: .purple) { addGemToPlace(0) }
-                            ControlButton(title: "+100", color: .blue) { addGemToPlace(1) }
-                            ControlButton(title: "+10", color: .green) { addGemToPlace(2) }
-                            ControlButton(title: "+1", color: .orange) { addGemToPlace(3) }
+                            .frame(width: 260)
                         }
                         .padding(.horizontal)
                     } else {
-                        Text("【ジェムをえらんで カゴにいれてね】")
-                            .font(.system(.caption, design: .rounded))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white.opacity(0.8))
-                        
-                        HStack(spacing: 20) {
-                            GemButton(value: 1, icon: "star.fill", label: "1のジェム", color: .orange) {
-                                addValueGem(1)
-                            }
-                            
-                            GemButton(value: 5, icon: "bag.fill", label: "5のふくろ", color: .pink) {
-                                addValueGem(5)
-                            }
-                            
-                            if level >= 2 {
-                                GemButton(value: 10, icon: "diamond.fill", label: "10のかたまり", color: .cyan) {
-                                    addValueGem(10)
+                        // 縦向き時の従来のレイアウト
+                        if level == 4 {
+                            // レベル4: 位取りのレイアウト (4つのカゴ)
+                            HStack(spacing: 12) {
+                                PlaceValueBasketView(title: "せん", label: "千のくらい", count: $thousandsCount, color: .purple, offset: kagoOffsets[0]) {
+                                    thousandsCount = max(0, thousandsCount - 1)
+                                }
+                                PlaceValueBasketView(title: "ひゃく", label: "百のくらい", count: $hundredsCount, color: .blue, offset: kagoOffsets[1]) {
+                                    hundredsCount = max(0, hundredsCount - 1)
+                                }
+                                PlaceValueBasketView(title: "じゅう", label: "十のくらい", count: $tensCount, color: .green, offset: kagoOffsets[2]) {
+                                    tensCount = max(0, tensCount - 1)
+                                }
+                                PlaceValueBasketView(title: "いち", label: "一のくらい", count: $onesCount, color: .orange, offset: kagoOffsets[3]) {
+                                    onesCount = max(0, onesCount - 1)
                                 }
                             }
+                            .padding(.horizontal)
+                            
+                            let currentTotal = (thousandsCount * 1000) + (hundredsCount * 100) + (tensCount * 10) + onesCount
+                            VStack(spacing: 4) {
+                                Text("いまの かず: \(currentTotal)")
+                                    .font(.system(.title2, design: .rounded))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                
+                                Text("(\(thousandsCount * 1000) + \(hundredsCount * 100) + \(tensCount * 10) + \(onesCount))")
+                                    .font(.system(.caption, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.6))
+                            }
+                            .padding(.vertical, 10)
+                        } else {
+                            // レベル1〜3: 天秤レイアウト
+                            GeometryReader { geo in
+                                let width = geo.size.width
+                                let centerY = geo.size.height * 0.4
+                                
+                                ZStack {
+                                    Path { path in
+                                        path.move(to: CGPoint(x: width / 2, y: centerY))
+                                        path.addLine(to: CGPoint(x: width / 2, y: centerY + 120))
+                                    }
+                                    .stroke(Color.white.opacity(0.3), lineWidth: 8)
+                                    
+                                    let leftWeight = CGFloat(initialLeft)
+                                    let rightWeight = CGFloat(currentRight)
+                                    let angleDegrees = Double(rightWeight - leftWeight) * (level == 3 ? 0.3 : 1.5)
+                                    
+                                    ZStack {
+                                        Rectangle()
+                                            .fill(Color.white.opacity(0.5))
+                                            .frame(width: width * 0.8, height: 6)
+                                        
+                                        // 左カゴ
+                                        VStack(spacing: 4) {
+                                            ZStack {
+                                                BasketShape()
+                                                    .fill(Color.blue.opacity(0.2))
+                                                    .frame(width: 110, height: 60)
+                                                    .overlay(
+                                                        BasketShape()
+                                                            .stroke(Color.blue.opacity(0.6), lineWidth: 3)
+                                                    )
+                                                
+                                                GemGridView(count: initialLeft)
+                                                    .frame(width: 90, height: 50)
+                                            }
+                                            .offset(y: leftBasketOffset)
+                                            
+                                            Text("\(initialLeft)")
+                                                .font(.system(.title3, design: .rounded))
+                                                .fontWeight(.bold)
+                                                .foregroundColor(.white)
+                                        }
+                                        .offset(x: -width * 0.3, y: 30)
+                                        
+                                        // 右カゴ
+                                        VStack(spacing: 4) {
+                                            ZStack(alignment: .topTrailing) {
+                                                BasketShape()
+                                                    .fill(Color.pink.opacity(0.2))
+                                                    .frame(width: 110, height: 60)
+                                                    .overlay(
+                                                        BasketShape()
+                                                            .stroke(Color.pink.opacity(0.6), lineWidth: 3)
+                                                    )
+                                                
+                                                MixedGemView(gems: addedGems)
+                                                    .frame(width: 90, height: 50)
+                                                
+                                                if !addedGems.isEmpty {
+                                                    Button(action: {
+                                                        removeLastGem()
+                                                    }) {
+                                                        Image(systemName: "arrow.uturn.backward.circle.fill")
+                                                            .font(.system(size: 26))
+                                                            .foregroundColor(.white)
+                                                            .background(Circle().fill(Color.red))
+                                                    }
+                                                    .offset(x: 10, y: -10)
+                                                }
+                                            }
+                                            .offset(y: rightBasketOffset)
+                                            .onTapGesture {
+                                                removeLastGem()
+                                            }
+                                            
+                                            Text("\(currentRight)")
+                                                .font(.system(.title3, design: .rounded))
+                                                .fontWeight(.bold)
+                                                .foregroundColor(.white)
+                                        }
+                                        .offset(x: width * 0.3, y: 30)
+                                    }
+                                    .rotationEffect(.degrees(angleDegrees), anchor: .center)
+                                    .offset(y: -40)
+                                }
+                            }
+                            .frame(height: 240)
                         }
-                        .padding()
-                        .background(Color.white.opacity(0.08))
-                        .cornerRadius(24)
+                        
+                        Spacer()
+                        
+                        // ジェム投入コントロール
+                        VStack(spacing: 12) {
+                            if level == 4 {
+                                Text("いれる 位のカゴを タップするか、ジェムを いれてね")
+                                    .font(.system(.subheadline, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.7))
+                                
+                                HStack(spacing: 12) {
+                                    ControlButton(title: "+1000", color: .purple) { addGemToPlace(0) }
+                                    ControlButton(title: "+100", color: .blue) { addGemToPlace(1) }
+                                    ControlButton(title: "+10", color: .green) { addGemToPlace(2) }
+                                    ControlButton(title: "+1", color: .orange) { addGemToPlace(3) }
+                                }
+                                .padding(.horizontal)
+                            } else {
+                                Text("【ジェムをえらんで カゴにいれてね】")
+                                    .font(.system(.caption, design: .rounded))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white.opacity(0.8))
+                                
+                                HStack(spacing: 20) {
+                                    GemButton(value: 1, icon: "star.fill", label: "1のジェム", color: .orange) {
+                                        addValueGem(1)
+                                    }
+                                    
+                                    GemButton(value: 5, icon: "bag.fill", label: "5のふくろ", color: .pink) {
+                                        addValueGem(5)
+                                    }
+                                    
+                                    if level >= 2 {
+                                        GemButton(value: 10, icon: "diamond.fill", label: "10のかたまり", color: .cyan) {
+                                            addValueGem(10)
+                                        }
+                                    }
+                                }
+                                .padding()
+                                .background(Color.white.opacity(0.08))
+                                .cornerRadius(24)
+                            }
+                        }
+                        .padding(.bottom, 10)
+                        
+                        Button(action: {
+                            checkAnswer()
+                        }) {
+                            Text("できた！")
+                                .font(.system(.title3, design: .rounded))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(
+                                    LinearGradient(
+                                        colors: [.orange, .yellow],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .cornerRadius(28)
+                                .shadow(color: .orange.opacity(0.4), radius: 10, y: 5)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
                     }
                 }
-                .padding(.bottom, 10)
-                
-                Button(action: {
-                    checkAnswer()
-                }) {
-                    Text("できた！")
-                        .font(.system(.title3, design: .rounded))
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(
-                            LinearGradient(
-                                colors: [.orange, .yellow],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .cornerRadius(28)
-                        .shadow(color: .orange.opacity(0.4), radius: 10, y: 5)
+                .padding(.bottom, isLandscape ? 10 : 60)
+                .onAppear {
+                    generateNewQuestion()
                 }
-                .padding(.horizontal, 30)
-                .padding(.bottom, 20)
-            }
-            .padding(.bottom, 60)
-            .onAppear {
-                generateNewQuestion()
-            }
             
             // 結果表示オーバーレイ
             if showResultOverlay {
@@ -356,6 +540,7 @@ struct CombineModeView: View {
             }
         }
     }
+}
     
     // 【修正】初回読み込み時かつ再挑戦用お題がある場合は、それを固定でセットする
     private func generateNewQuestion() {
@@ -490,26 +675,27 @@ struct PlaceValueBasketView: View {
     @Binding var count: Int
     let color: Color
     let offset: CGFloat
+    var isLandscape: Bool = false
     let tapAction: () -> Void
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: isLandscape ? 4 : 8) {
             Text(title)
-                .font(.system(.headline, design: .rounded))
+                .font(.system(isLandscape ? .caption : .headline, design: .rounded))
                 .fontWeight(.bold)
                 .foregroundColor(color)
             
             ZStack(alignment: .topTrailing) {
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: isLandscape ? 12 : 18)
                     .fill(color.opacity(0.15))
-                    .frame(height: 120)
+                    .frame(height: isLandscape ? 80 : 120)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 18)
+                        RoundedRectangle(cornerRadius: isLandscape ? 12 : 18)
                             .stroke(color.opacity(0.5), lineWidth: 2)
                     )
                 
                 let items = Array(0..<count)
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: 2), spacing: 2) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: isLandscape ? 4 : 8, maximum: isLandscape ? 9 : 14), spacing: 2), count: 2), spacing: 2) {
                     ForEach(items, id: \.self) { _ in
                         Circle()
                             .fill(
@@ -517,29 +703,29 @@ struct PlaceValueBasketView: View {
                                     colors: [color.opacity(0.8), color],
                                     center: .center,
                                     startRadius: 0,
-                                    endRadius: 8
+                                    endRadius: isLandscape ? 5 : 8
                                 )
                             )
-                            .frame(width: 12, height: 12)
+                            .frame(width: isLandscape ? 8 : 12, height: isLandscape ? 8 : 12)
                             .shadow(color: color.opacity(0.4), radius: 2)
                     }
                 }
-                .padding(8)
+                .padding(isLandscape ? 4 : 8)
                 
                 if count > 0 {
                     Button(action: tapAction) {
                         Image(systemName: "minus.circle.fill")
-                            .font(.system(size: 24))
+                            .font(.system(size: isLandscape ? 18 : 24))
                             .foregroundColor(.white)
                             .background(Circle().fill(Color.red))
                     }
-                    .offset(x: 10, y: -10)
+                    .offset(x: isLandscape ? 6 : 10, y: isLandscape ? -6 : -10)
                 }
             }
             .offset(y: offset)
             
             Text("\(count)")
-                .font(.system(.title3, design: .rounded))
+                .font(.system(isLandscape ? .body : .title3, design: .rounded))
                 .fontWeight(.bold)
                 .foregroundColor(.white)
         }
@@ -556,15 +742,15 @@ struct ControlButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(.body, design: .rounded))
+                .font(.system(.caption, design: .rounded))
                 .fontWeight(.bold)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
+                .padding(.vertical, 8)
                 .background(color.opacity(0.8))
-                .cornerRadius(12)
+                .cornerRadius(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: 10)
                         .stroke(Color.white.opacity(0.15), lineWidth: 1)
                 )
         }
@@ -577,31 +763,34 @@ struct GemButton: View {
     let icon: String
     let label: String
     let color: Color
+    var isLandscape: Bool = false
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 6) {
+            VStack(spacing: isLandscape ? 2 : 6) {
                 ZStack {
                     Circle()
                         .fill(color.opacity(0.2))
-                        .frame(width: 46, height: 46)
+                        .frame(width: isLandscape ? 36 : 46, height: isLandscape ? 36 : 46)
                     
                     Image(systemName: icon)
-                        .font(.system(size: 20, weight: .bold))
+                        .font(.system(size: isLandscape ? 14 : 20, weight: .bold))
                         .foregroundColor(color)
                 }
                 
                 Text("+\(value)")
-                    .font(.system(.body, design: .rounded))
+                    .font(.system(isLandscape ? .caption : .body, design: .rounded))
                     .fontWeight(.black)
                     .foregroundColor(.white)
                 
-                Text(label)
-                    .font(.system(.caption2, design: .rounded))
-                    .foregroundColor(.white.opacity(0.6))
+                if !isLandscape {
+                    Text(label)
+                        .font(.system(.caption2, design: .rounded))
+                        .foregroundColor(.white.opacity(0.6))
+                }
             }
-            .frame(width: 80)
+            .frame(width: isLandscape ? 60 : 80)
         }
     }
 }
@@ -609,27 +798,28 @@ struct GemButton: View {
 // MARK: - Mixed Gem View
 struct MixedGemView: View {
     let gems: [Int]
+    var isLandscape: Bool = false
     
     var body: some View {
         let sortedGems = gems.sorted(by: >)
         
-        HStack(spacing: 4) {
+        HStack(spacing: isLandscape ? 2 : 4) {
             ForEach(0..<sortedGems.count, id: \.self) { idx in
                 let val = sortedGems[idx]
                 
                 if val == 10 {
                     Image(systemName: "diamond.fill")
-                        .font(.system(size: 18))
+                        .font(.system(size: isLandscape ? 12 : 18))
                         .foregroundColor(.cyan)
                         .shadow(color: .cyan.opacity(0.5), radius: 3)
                 } else if val == 5 {
                     Image(systemName: "bag.fill")
-                        .font(.system(size: 14))
+                        .font(.system(size: isLandscape ? 10 : 14))
                         .foregroundColor(.pink)
                         .shadow(color: .pink.opacity(0.5), radius: 2)
                 } else {
                     Image(systemName: "star.fill")
-                        .font(.system(size: 12))
+                        .font(.system(size: isLandscape ? 8 : 12))
                         .foregroundColor(.orange)
                 }
             }
@@ -660,14 +850,15 @@ struct BasketShape: Shape {
 // MARK: - Gem Grid View (左カゴ用)
 struct GemGridView: View {
     let count: Int
+    var isLandscape: Bool = false
     
     var body: some View {
         let columns = count > 5 ? 4 : count
         let items = Array(0..<count)
         
         LazyVGrid(
-            columns: Array(repeating: GridItem(.flexible(minimum: 8, maximum: 14), spacing: 2), count: columns == 0 ? 1 : columns),
-            spacing: 2
+            columns: Array(repeating: GridItem(.flexible(minimum: isLandscape ? 5 : 8, maximum: isLandscape ? 9 : 14), spacing: isLandscape ? 1 : 2), count: columns == 0 ? 1 : columns),
+            spacing: isLandscape ? 1 : 2
         ) {
             ForEach(items, id: \.self) { _ in
                 Circle()
@@ -676,13 +867,13 @@ struct GemGridView: View {
                             colors: [.yellow, .orange],
                             center: .center,
                             startRadius: 0,
-                            endRadius: 8
+                            endRadius: isLandscape ? 5 : 8
                         )
                     )
-                    .frame(width: 10, height: 10)
+                    .frame(width: isLandscape ? 6 : 10, height: isLandscape ? 6 : 10)
                     .shadow(color: .orange.opacity(0.3), radius: 2)
             }
         }
-        .padding(4)
+        .padding(isLandscape ? 2 : 4)
     }
 }

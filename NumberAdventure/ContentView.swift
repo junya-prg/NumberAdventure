@@ -104,7 +104,7 @@ struct ReadModeView: View {
                 if isLandscape {
                     landscapeLayout(size: geometry.size)
                 } else {
-                    portraitLayout()
+                    portraitLayout(size: geometry.size)
                 }
             }
             .padding(.vertical, 8)
@@ -147,8 +147,9 @@ struct ReadModeView: View {
     }
     
     // 縦向きレイアウト
-    @ViewBuilder
-    private func portraitLayout() -> some View {
+    private func portraitLayout(size: CGSize) -> some View {
+        let isSmallScreen = size.height < 680
+        
         let cardWidth: CGFloat
         let cardHeight: CGFloat
         let fontSize: CGFloat
@@ -156,32 +157,32 @@ struct ReadModeView: View {
         
         switch selectedDigits {
         case 1:
-            cardWidth = 150
-            cardHeight = 210
-            fontSize = 120
-            spacing = 16
+            cardWidth = isSmallScreen ? 110 : 150
+            cardHeight = isSmallScreen ? 150 : 210
+            fontSize = isSmallScreen ? 88 : 120
+            spacing = isSmallScreen ? 10 : 16
         case 2:
-            cardWidth = 125
-            cardHeight = 175
-            fontSize = 100
-            spacing = 12
+            cardWidth = isSmallScreen ? 95 : 125
+            cardHeight = isSmallScreen ? 130 : 175
+            fontSize = isSmallScreen ? 76 : 100
+            spacing = isSmallScreen ? 8 : 12
         case 3:
-            cardWidth = 100
-            cardHeight = 140
-            fontSize = 80
-            spacing = 10
+            cardWidth = isSmallScreen ? 76 : 100
+            cardHeight = isSmallScreen ? 105 : 140
+            fontSize = isSmallScreen ? 60 : 80
+            spacing = isSmallScreen ? 6 : 10
         default: // 4
-            cardWidth = 78
-            cardHeight = 110
-            fontSize = 62
-            spacing = 8
+            cardWidth = isSmallScreen ? 62 : 78
+            cardHeight = isSmallScreen ? 85 : 110
+            fontSize = isSmallScreen ? 48 : 62
+            spacing = isSmallScreen ? 4 : 8
         }
         
-        return VStack(spacing: 16) {
+        return VStack(spacing: isSmallScreen ? 8 : 16) {
             // 上部ヘッダー（星メーター）
             HStack {
                 Text("すうじアドベンチャー")
-                    .font(.system(.title2, design: .rounded))
+                    .font(.system(isSmallScreen ? .title3 : .title2, design: .rounded))
                     .fontWeight(.bold)
                     .foregroundColor(Color.appText(for: colorScheme))
                 
@@ -190,46 +191,46 @@ struct ReadModeView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "star.fill")
                         .foregroundColor(.yellow)
-                        .font(.title2)
+                        .font(isSmallScreen ? .title3 : .title2)
                         .scaleEffect(animateStar ? 1.5 : 1.0)
                         .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animateStar)
                     Text("\(starsCount)")
-                        .font(.system(.title3, design: .rounded))
+                        .font(.system(isSmallScreen ? .body : .title3, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(Color.appText(for: colorScheme))
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(.horizontal, isSmallScreen ? 12 : 16)
+                .padding(.vertical, isSmallScreen ? 6 : 8)
                 .background(Color.cardBackground(for: colorScheme).opacity(0.8))
-                .cornerRadius(20)
+                .cornerRadius(isSmallScreen ? 15 : 20)
                 .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 5, x: 0, y: 2)
             }
             .padding(.horizontal)
             
             // 桁数選択
-            HStack(spacing: 12) {
+            HStack(spacing: isSmallScreen ? 8 : 12) {
                 ForEach([1, 2, 3, 4], id: \.self) { digit in
                     Button(action: {
                         selectedDigits = digit
                     }) {
                         Text("\(digit)けた")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(selectedDigits == digit ? .white : Color.appText(for: colorScheme).opacity(0.8))
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
+                            .padding(.horizontal, isSmallScreen ? 12 : 16)
+                            .padding(.vertical, isSmallScreen ? 6 : 10)
                             .background(selectedDigits == digit ? Color(red: 0.95, green: 0.55, blue: 0.2) : Color.cardBackground(for: colorScheme))
-                            .cornerRadius(15)
+                            .cornerRadius(isSmallScreen ? 10 : 15)
                             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 3, x: 0, y: 2)
                     }
                 }
             }
-            .padding(.top, 4)
+            .padding(.top, isSmallScreen ? 2 : 4)
             
-            Spacer(minLength: 8)
+            Spacer(minLength: isSmallScreen ? 4 : 8)
             
             // 数字表示エリア
-            VStack(spacing: 12) {
+            VStack(spacing: isSmallScreen ? 6 : 12) {
                 HStack(spacing: spacing) {
                     if selectedDigits >= 4 {
                         digitCard(
@@ -275,15 +276,15 @@ struct ReadModeView: View {
                 .padding(.horizontal)
                 
                 if answerStatus == .incorrect {
-                    VStack(spacing: 8) {
+                    VStack(spacing: isSmallScreen ? 4 : 8) {
                         Text(JapaneseNumberFormatter.toFuriganaSpaced(currentNumber))
-                            .font(.system(.title3, design: .rounded))
+                            .font(.system(isSmallScreen ? .body : .title3, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 0.85, green: 0.35, blue: 0.3))
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
+                            .padding(.horizontal, isSmallScreen ? 12 : 20)
+                            .padding(.vertical, isSmallScreen ? 6 : 10)
                             .background(colorScheme == .dark ? Color(red: 0.35, green: 0.18, blue: 0.15) : Color(red: 1.0, green: 0.92, blue: 0.92))
-                            .cornerRadius(15)
+                            .cornerRadius(isSmallScreen ? 10 : 15)
                             .transition(.opacity.combined(with: .scale))
                         
                         Button(action: {
@@ -293,52 +294,51 @@ struct ReadModeView: View {
                                 Image(systemName: "speaker.wave.2.fill")
                                 Text("もういちど きく")
                             }
-                            .font(.system(.subheadline, design: .rounded))
+                            .font(.system(isSmallScreen ? .caption : .subheadline, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, isSmallScreen ? 12 : 16)
+                            .padding(.vertical, isSmallScreen ? 6 : 8)
                             .background(Color(red: 0.9, green: 0.4, blue: 0.35))
-                            .cornerRadius(12)
+                            .cornerRadius(isSmallScreen ? 10 : 12)
                         }
                     }
                 }
             }
             
-            Spacer(minLength: 8)
+            Spacer(minLength: isSmallScreen ? 4 : 8)
             
             // 音声認識の音声吹き出しプレビュー
             VStack {
                 if speechRecognizer.isRecording {
-                    VStack(spacing: 4) {
+                    VStack(spacing: isSmallScreen ? 2 : 4) {
                         Text("きいているよ...👂")
-                            .font(.system(.subheadline, design: .rounded))
+                            .font(.system(isSmallScreen ? .caption : .subheadline, design: .rounded))
                             .foregroundColor(.gray)
                         Text(speechRecognizer.transcript.isEmpty ? "こえをだしてね" : speechRecognizer.transcript)
-                            .font(.system(.title3, design: .rounded))
+                            .font(.system(isSmallScreen ? .subheadline : .title3, design: .rounded))
                             .fontWeight(.medium)
                             .foregroundColor(Color.appText(for: colorScheme))
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, isSmallScreen ? 14 : 20)
+                            .padding(.vertical, isSmallScreen ? 6 : 8)
                             .background(Color.cardBackground(for: colorScheme))
-                            .cornerRadius(12)
+                            .cornerRadius(isSmallScreen ? 10 : 12)
                             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.3 : 0.1), radius: 2)
                     }
                     .transition(.opacity)
                 }
             }
-            .frame(height: speechRecognizer.isRecording ? 80 : 0)
+            .frame(height: speechRecognizer.isRecording ? (isSmallScreen ? 55 : 80) : 0)
             
             // コントロールボタン
-            controlButtonsView()
-                .frame(height: 140)
+            controlButtonsView(isSmallScreen: isSmallScreen)
+                .frame(height: isSmallScreen ? 100 : 140)
             
-            Spacer(minLength: 8)
+            Spacer(minLength: isSmallScreen ? 4 : 8)
         }
     }
     
     // 横向きレイアウト
-    @ViewBuilder
     private func landscapeLayout(size: CGSize) -> some View {
         let leftWidth = size.width * 0.58
         let maxAvailableHeight = size.height - 80
@@ -522,10 +522,13 @@ struct ReadModeView: View {
     
     // コントロールボタン群
     @ViewBuilder
-    private func controlButtonsView() -> some View {
+    private func controlButtonsView(isSmallScreen: Bool = false) -> some View {
+        let micButtonSize: CGFloat = isSmallScreen ? 60 : 76
+        let micIconSize: CGFloat = isSmallScreen ? 24 : 32
+        
         if answerStatus == .none {
-            VStack(spacing: 12) {
-                HStack(spacing: 20) {
+            VStack(spacing: isSmallScreen ? 6 : 12) {
+                HStack(spacing: isSmallScreen ? 14 : 20) {
                     if speechRecognizer.isRecording {
                         miniWaveform()
                     } else {
@@ -536,7 +539,7 @@ struct ReadModeView: View {
                         if !speechRecognizer.isRecording {
                             Circle()
                                 .stroke(Color(red: 0.95, green: 0.55, blue: 0.2).opacity(0.4), lineWidth: 4)
-                                .frame(width: 76, height: 76)
+                                .frame(width: micButtonSize, height: micButtonSize)
                                 .scaleEffect(isAnimatingRipple ? 1.4 : 1.0)
                                 .opacity(isAnimatingRipple ? 0.0 : 1.0)
                                 .onAppear {
@@ -549,7 +552,7 @@ struct ReadModeView: View {
                         } else {
                             Circle()
                                 .fill(Color.red.opacity(0.25))
-                                .frame(width: 76, height: 76)
+                                .frame(width: micButtonSize, height: micButtonSize)
                                 .scaleEffect(isAnimatingRipple ? 1.3 : 1.0)
                                 .onAppear {
                                     isAnimatingRipple = false
@@ -566,11 +569,11 @@ struct ReadModeView: View {
                             ZStack {
                                 Circle()
                                     .fill(speechRecognizer.isRecording ? Color.red : Color(red: 0.95, green: 0.55, blue: 0.2))
-                                    .frame(width: 76, height: 76)
+                                    .frame(width: micButtonSize, height: micButtonSize)
                                     .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
                                 
                                 Image(systemName: speechRecognizer.isRecording ? "stop.fill" : "mic.fill")
-                                    .font(.system(size: 32))
+                                    .font(.system(size: micIconSize))
                                     .foregroundColor(.white)
                             }
                         }
@@ -592,35 +595,35 @@ struct ReadModeView: View {
                             Image(systemName: "arrow.counterclockwise.circle.fill")
                             Text("やりなおす")
                         }
-                        .font(.system(.subheadline, design: .rounded))
+                        .font(.system(isSmallScreen ? .caption : .subheadline, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(Color(red: 0.8, green: 0.4, blue: 0.3))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 6)
+                        .padding(.horizontal, isSmallScreen ? 10 : 14)
+                        .padding(.vertical, isSmallScreen ? 4 : 6)
                         .background(colorScheme == .dark ? Color(red: 0.25, green: 0.18, blue: 0.15) : Color(red: 0.95, green: 0.9, blue: 0.85))
-                        .cornerRadius(12)
+                        .cornerRadius(isSmallScreen ? 10 : 12)
                     }
                     .transition(.opacity.combined(with: .scale))
                 } else {
                     Spacer()
-                        .frame(height: 20)
+                        .frame(height: isSmallScreen ? 8 : 20)
                 }
             }
         } else {
-            HStack(spacing: 24) {
+            HStack(spacing: isSmallScreen ? 16 : 24) {
                 if answerStatus == .incorrect {
                     Button(action: {
                         resetAnswer()
                     }) {
                         Text("もういちど")
-                            .font(.system(.title3, design: .rounded))
+                            .font(.system(isSmallScreen ? .body : .title3, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(Color.appText(for: colorScheme))
-                            .frame(width: 130, height: 50)
+                            .frame(width: isSmallScreen ? 100 : 130, height: isSmallScreen ? 40 : 50)
                             .background(Color.cardBackground(for: colorScheme))
-                            .cornerRadius(25)
+                            .cornerRadius(isSmallScreen ? 20 : 25)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 25)
+                                RoundedRectangle(cornerRadius: isSmallScreen ? 20 : 25)
                                     .stroke(Color.appText(for: colorScheme).opacity(0.3), lineWidth: 2)
                             )
                     }
@@ -630,12 +633,12 @@ struct ReadModeView: View {
                     generateNewNumber(startRecording: true)
                 }) {
                     Text("つぎへ")
-                        .font(.system(.title3, design: .rounded))
+                        .font(.system(isSmallScreen ? .body : .title3, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(width: 150, height: 50)
+                        .frame(width: isSmallScreen ? 120 : 150, height: isSmallScreen ? 40 : 50)
                         .background(Color(red: 0.35, green: 0.7, blue: 0.35))
-                        .cornerRadius(25)
+                        .cornerRadius(isSmallScreen ? 20 : 25)
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
                 }
             }
@@ -965,7 +968,7 @@ struct WriteModeView: View {
                 if isLandscape {
                     landscapeLayout(size: geometry.size)
                 } else {
-                    portraitLayout()
+                    portraitLayout(size: geometry.size)
                 }
             }
             .padding(.vertical, 8)
@@ -1015,13 +1018,14 @@ struct WriteModeView: View {
     }
     
     // 縦向きレイアウト
-    @ViewBuilder
-    private func portraitLayout() -> some View {
-        VStack(spacing: 12) {
+    private func portraitLayout(size: CGSize) -> some View {
+        let isSmallScreen = size.height < 680
+        
+        return VStack(spacing: isSmallScreen ? 8 : 12) {
             // 上部ヘッダー（星メーター）
             HStack {
                 Text("すうじアドベンチャー")
-                    .font(.system(.title2, design: .rounded))
+                    .font(.system(isSmallScreen ? .title3 : .title2, design: .rounded))
                     .fontWeight(.bold)
                     .foregroundColor(Color.appText(for: colorScheme))
                 
@@ -1030,97 +1034,97 @@ struct WriteModeView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "star.fill")
                         .foregroundColor(.yellow)
-                        .font(.title2)
+                        .font(isSmallScreen ? .title3 : .title2)
                         .scaleEffect(animateStar ? 1.5 : 1.0)
                         .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animateStar)
                     Text("\(starsCount)")
-                        .font(.system(.title3, design: .rounded))
+                        .font(.system(isSmallScreen ? .body : .title3, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(Color.appText(for: colorScheme))
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .padding(.horizontal, isSmallScreen ? 12 : 16)
+                .padding(.vertical, isSmallScreen ? 6 : 8)
                 .background(Color.cardBackground(for: colorScheme).opacity(0.8))
-                .cornerRadius(20)
+                .cornerRadius(isSmallScreen ? 15 : 20)
                 .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 5, x: 0, y: 2)
             }
             .padding(.horizontal)
             
             // 桁数選択
-            HStack(spacing: 10) {
+            HStack(spacing: isSmallScreen ? 8 : 10) {
                 ForEach([1, 2, 3, 4], id: \.self) { digit in
                     Button(action: {
                         selectedDigits = digit
                     }) {
                         Text("\(digit)けた")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(selectedDigits == digit ? .white : Color.appText(for: colorScheme).opacity(0.8))
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
+                            .padding(.horizontal, isSmallScreen ? 12 : 16)
+                            .padding(.vertical, isSmallScreen ? 6 : 10)
                             .background(selectedDigits == digit ? Color(red: 0.95, green: 0.55, blue: 0.2) : Color.cardBackground(for: colorScheme))
-                            .cornerRadius(15)
+                            .cornerRadius(isSmallScreen ? 10 : 15)
                             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 3, x: 0, y: 2)
                     }
                 }
             }
-            .padding(.top, 4)
+            .padding(.top, isSmallScreen ? 2 : 4)
             
             // おとをきくボタン
             Button(action: {
                 playQuestionVoice()
             }) {
-                HStack(spacing: 6) {
+                HStack(spacing: 4) {
                     Image(systemName: "speaker.wave.3.fill")
-                        .font(.system(size: 20))
+                        .font(.system(size: isSmallScreen ? 16 : 20))
                         .foregroundColor(Color(red: 0.95, green: 0.55, blue: 0.2))
                     Text("おとをきく")
-                        .font(.system(.subheadline, design: .rounded))
+                        .font(.system(isSmallScreen ? .caption : .subheadline, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(Color.appText(for: colorScheme))
                 }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 18)
+                .padding(.vertical, isSmallScreen ? 6 : 8)
+                .padding(.horizontal, isSmallScreen ? 14 : 18)
                 .background(Color.cardBackground(for: colorScheme))
-                .cornerRadius(12)
+                .cornerRadius(isSmallScreen ? 10 : 12)
                 .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.05), radius: 3)
             }
-            .padding(.top, 4)
+            .padding(.top, isSmallScreen ? 2 : 4)
             
             // 上部：プレビューミニカード
-            HStack(spacing: 8) {
+            HStack(spacing: isSmallScreen ? 6 : 8) {
                 if selectedDigits >= 4 {
-                    previewCard(drawing: thousandsDrawing, position: .thousands, label: "せん", color: Color(red: 0.6, green: 0.4, blue: 0.8))
+                    previewCard(drawing: thousandsDrawing, position: .thousands, label: "せん", color: Color(red: 0.6, green: 0.4, blue: 0.8), isSmallScreen: isSmallScreen)
                 }
                 if selectedDigits >= 3 {
-                    previewCard(drawing: hundredsDrawing, position: .hundreds, label: "ひゃく", color: Color(red: 0.25, green: 0.55, blue: 0.85))
+                    previewCard(drawing: hundredsDrawing, position: .hundreds, label: "ひゃく", color: Color(red: 0.25, green: 0.55, blue: 0.85), isSmallScreen: isSmallScreen)
                 }
                 if selectedDigits >= 2 {
-                    previewCard(drawing: tensDrawing, position: .tens, label: "じゅう", color: Color(red: 0.35, green: 0.65, blue: 0.35))
+                    previewCard(drawing: tensDrawing, position: .tens, label: "じゅう", color: Color(red: 0.35, green: 0.65, blue: 0.35), isSmallScreen: isSmallScreen)
                 }
-                previewCard(drawing: onesDrawing, position: .ones, label: "いち", color: Color(red: 0.9, green: 0.4, blue: 0.35))
+                previewCard(drawing: onesDrawing, position: .ones, label: "いち", color: Color(red: 0.9, green: 0.4, blue: 0.35), isSmallScreen: isSmallScreen)
             }
             .padding(.horizontal)
-            .padding(.vertical, 4)
+            .padding(.vertical, isSmallScreen ? 2 : 4)
             
             // 中央：メインキャンバス (手動遷移付き)
-            HStack(spacing: 12) {
+            HStack(spacing: isSmallScreen ? 8 : 12) {
                 Button(action: {
                     retreatToPreviousPosition()
                 }) {
                     Image(systemName: "chevron.left.circle.fill")
-                        .font(.system(size: 44))
+                        .font(.system(size: isSmallScreen ? 34 : 44))
                         .foregroundColor(canRetreat() ? Color(red: 0.95, green: 0.55, blue: 0.2) : Color.gray.opacity(0.2))
                 }
                 .disabled(!canRetreat())
                 
-                mainCanvasCard(color: activeColor(), canvasSize: 200)
+                mainCanvasCard(color: activeColor(), canvasSize: isSmallScreen ? 140 : 200)
                 
                 Button(action: {
                     advanceToNextPosition()
                 }) {
                     Image(systemName: "chevron.right.circle.fill")
-                        .font(.system(size: 44))
+                        .font(.system(size: isSmallScreen ? 34 : 44))
                         .foregroundColor(canAdvance() ? Color(red: 0.95, green: 0.55, blue: 0.2) : Color.gray.opacity(0.2))
                 }
                 .disabled(!canAdvance())
@@ -1128,66 +1132,65 @@ struct WriteModeView: View {
             
             // 正解・不正解時の表示
             if answerStatus == .incorrect {
-                VStack(spacing: 6) {
-                    HStack(spacing: 8) {
+                VStack(spacing: isSmallScreen ? 4 : 6) {
+                    HStack(spacing: 6) {
                         Text("せいかい：")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(Color.appText(for: colorScheme))
                         
                         HStack(spacing: 6) {
                             if selectedDigits >= 4 {
                                 Text(String(currentNumber / 1000))
-                                    .font(.system(.title2, design: .rounded))
+                                    .font(.system(isSmallScreen ? .subheadline : .title2, design: .rounded))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color(red: 0.6, green: 0.4, blue: 0.8))
                             }
                             if selectedDigits >= 3 {
                                 Text(String((currentNumber % 1000) / 100))
-                                    .font(.system(.title2, design: .rounded))
+                                    .font(.system(isSmallScreen ? .subheadline : .title2, design: .rounded))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color(red: 0.25, green: 0.55, blue: 0.85))
                             }
                             if selectedDigits >= 2 {
                                 Text(String((currentNumber % 100) / 10))
-                                    .font(.system(.title2, design: .rounded))
+                                    .font(.system(isSmallScreen ? .subheadline : .title2, design: .rounded))
                                     .fontWeight(.bold)
                                     .foregroundColor(Color(red: 0.35, green: 0.65, blue: 0.35))
                             }
                             Text(String(currentNumber % 10))
-                                .font(.system(.title2, design: .rounded))
+                                .font(.system(isSmallScreen ? .subheadline : .title2, design: .rounded))
                                 .fontWeight(.bold)
                                 .foregroundColor(Color(red: 0.9, green: 0.4, blue: 0.35))
                         }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, isSmallScreen ? 8 : 12)
+                        .padding(.vertical, isSmallScreen ? 2 : 4)
                         .background(Color.cardBackground(for: colorScheme))
-                        .cornerRadius(10)
+                        .cornerRadius(isSmallScreen ? 8 : 10)
                     }
                     
                     Text(JapaneseNumberFormatter.toFuriganaSpaced(currentNumber))
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(Color(red: 0.85, green: 0.35, blue: 0.3))
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 6)
+                        .padding(.horizontal, isSmallScreen ? 12 : 16)
+                        .padding(.vertical, isSmallScreen ? 4 : 6)
                         .background(colorScheme == .dark ? Color(red: 0.35, green: 0.18, blue: 0.15) : Color(red: 1.0, green: 0.92, blue: 0.92))
-                        .cornerRadius(12)
+                        .cornerRadius(isSmallScreen ? 10 : 12)
                 }
                 .transition(.opacity.combined(with: .scale))
             }
             
-            Spacer(minLength: 4)
+            Spacer(minLength: isSmallScreen ? 2 : 4)
             
-            controlButtonsView(cardWidth: 200, cardHeight: 200)
-                .frame(height: 60)
+            controlButtonsView(cardWidth: isSmallScreen ? 140 : 200, cardHeight: isSmallScreen ? 140 : 200, isSmallScreen: isSmallScreen)
+                .frame(height: isSmallScreen ? 48 : 60)
             
-            Spacer(minLength: 4)
+            Spacer(minLength: isSmallScreen ? 2 : 4)
         }
     }
     
     // 横向きレイアウト
-    @ViewBuilder
     private func landscapeLayout(size: CGSize) -> some View {
         let leftWidth = size.width * 0.58
         let rightWidth = size.width * 0.36
@@ -1372,22 +1375,22 @@ struct WriteModeView: View {
     
     // コントロールボタン
     @ViewBuilder
-    private func controlButtonsView(cardWidth: CGFloat, cardHeight: CGFloat) -> some View {
+    private func controlButtonsView(cardWidth: CGFloat, cardHeight: CGFloat, isSmallScreen: Bool = false) -> some View {
         if answerStatus == .none {
-            HStack(spacing: 16) {
+            HStack(spacing: isSmallScreen ? 12 : 16) {
                 Button(action: {
                     clearActiveDrawing()
                 }) {
-                    HStack(spacing: 6) {
+                    HStack(spacing: 4) {
                         Image(systemName: "trash.fill")
                         Text("けす")
                     }
-                    .font(.system(.headline, design: .rounded))
+                    .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                     .fontWeight(.bold)
                     .foregroundColor(Color(red: 0.8, green: 0.4, blue: 0.3))
-                    .frame(width: 110, height: 48)
+                    .frame(width: isSmallScreen ? 90 : 110, height: isSmallScreen ? 40 : 48)
                     .background(colorScheme == .dark ? Color(red: 0.25, green: 0.18, blue: 0.15) : Color(red: 0.95, green: 0.9, blue: 0.85))
-                    .cornerRadius(24)
+                    .cornerRadius(isSmallScreen ? 20 : 24)
                 }
                 
                 Button(action: {
@@ -1402,33 +1405,33 @@ struct WriteModeView: View {
                                 Image(systemName: "checkmark.circle.fill")
                                 Text("できた！")
                             }
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                             .fontWeight(.bold)
                         }
                     }
                     .foregroundColor(.white)
-                    .frame(width: 130, height: 48)
+                    .frame(width: isSmallScreen ? 110 : 130, height: isSmallScreen ? 40 : 48)
                     .background(isRecognizing || isDrawingEmpty() ? Color.gray : Color(red: 0.35, green: 0.7, blue: 0.35))
-                    .cornerRadius(24)
+                    .cornerRadius(isSmallScreen ? 20 : 24)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
                 }
                 .disabled(isRecognizing || isDrawingEmpty())
             }
         } else {
-            HStack(spacing: 24) {
+            HStack(spacing: isSmallScreen ? 16 : 24) {
                 if answerStatus == .incorrect {
                     Button(action: {
                         resetAnswer()
                     }) {
                         Text("もういちど")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                             .fontWeight(.bold)
                             .foregroundColor(Color.appText(for: colorScheme))
-                            .frame(width: 120, height: 48)
+                            .frame(width: isSmallScreen ? 100 : 120, height: isSmallScreen ? 40 : 48)
                             .background(Color.cardBackground(for: colorScheme))
-                            .cornerRadius(24)
+                            .cornerRadius(isSmallScreen ? 20 : 24)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 24)
+                                RoundedRectangle(cornerRadius: isSmallScreen ? 20 : 24)
                                     .stroke(Color.appText(for: colorScheme).opacity(0.3), lineWidth: 2)
                             )
                     }
@@ -1438,36 +1441,41 @@ struct WriteModeView: View {
                     generateNewNumber()
                 }) {
                     Text("つぎへ")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(isSmallScreen ? .subheadline : .headline, design: .rounded))
                         .fontWeight(.bold)
                         .foregroundColor(.white)
-                        .frame(width: 140, height: 48)
+                        .frame(width: isSmallScreen ? 110 : 140, height: isSmallScreen ? 40 : 48)
                         .background(Color(red: 0.35, green: 0.7, blue: 0.35))
-                        .cornerRadius(24)
+                        .cornerRadius(isSmallScreen ? 20 : 24)
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 3)
                 }
             }
         }
     }
     
-    private func previewCard(drawing: PKDrawing, position: DigitPosition, label: String, color: Color) -> some View {
+    private func previewCard(drawing: PKDrawing, position: DigitPosition, label: String, color: Color, isSmallScreen: Bool = false) -> some View {
         let isActive = activePosition == position
-        return VStack(spacing: 4) {
+        let cardWidth: CGFloat = isSmallScreen ? 50 : 70
+        let cardHeight: CGFloat = isSmallScreen ? 68 : 95
+        let previewWidth: CGFloat = isSmallScreen ? 38 : 55
+        let previewHeight: CGFloat = isSmallScreen ? 52 : 75
+        
+        return VStack(spacing: isSmallScreen ? 2 : 4) {
             ZStack {
                 Color.cardBackground(for: colorScheme)
-                    .cornerRadius(12)
+                    .cornerRadius(isSmallScreen ? 8 : 12)
                     .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.08), radius: isActive ? 6 : 2, x: 0, y: isActive ? 4 : 1)
                 
                 PKDrawingPreview(drawing: drawing, colorScheme: colorScheme)
-                    .frame(width: 55, height: 75)
-                    .padding(8)
+                    .frame(width: previewWidth, height: previewHeight)
+                    .padding(isSmallScreen ? 4 : 8)
             }
-            .frame(width: 70, height: 95)
+            .frame(width: cardWidth, height: cardHeight)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isActive ? Color(red: 0.95, green: 0.55, blue: 0.2) : color.opacity(0.3), lineWidth: isActive ? 3 : 1.5)
+                RoundedRectangle(cornerRadius: isSmallScreen ? 8 : 12)
+                    .stroke(isActive ? Color(red: 0.95, green: 0.55, blue: 0.2) : color.opacity(0.3), lineWidth: isActive ? 2.5 : 1.5)
             )
-            .scaleEffect(isActive ? 1.08 : 0.95)
+            .scaleEffect(isActive ? 1.05 : 0.95)
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isActive)
             .onTapGesture {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
