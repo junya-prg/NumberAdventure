@@ -6,6 +6,7 @@ enum ActivityMode: String, Codable {
     case write = "かく"
     case dotToDot = "てんつなぎ"
     case combine = "あわせる"
+    case arShooting = "ARシューティング"
 }
 
 struct RetryRequest: Equatable {

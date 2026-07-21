@@ -11,15 +11,18 @@ struct PlayView: View {
             switch self {
             case .dotToDot(let start, let count): return "dotToDot_\(start)_\(count)"
             case .combine(let level, let target): return "combine_\(level)_\(target ?? 0)"
+            case .arShooting(let start, let count): return "arShooting_\(start)_\(count)"
             }
         }
         case dotToDot(start: Int, count: Int)
         case combine(level: Int, target: Int? = nil)
+        case arShooting(start: Int, count: Int)
     }
     
     // 設定選択中のフラグ
     @State private var showDotSettings = false
     @State private var showCombineSettings = false
+    @State private var showARShootingSettings = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -88,6 +91,7 @@ struct PlayView: View {
                                             withAnimation(.spring()) {
                                                 showDotSettings.toggle()
                                                 showCombineSettings = false
+                                                showARShootingSettings = false
                                             }
                                         }
                                         
@@ -133,7 +137,65 @@ struct PlayView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                     
-                                    // 2. あわせていくつ
+                                    // 2. ARすうじシューティング
+                                    VStack(spacing: 0) {
+                                        PlayMenuCard(
+                                            title: "ARすうじシューティング",
+                                            description: "カメラでおへやを見わたして、つぎの数字をさがしてビームでうとう！",
+                                            icon: "scope",
+                                            color: .orange,
+                                            isLandscape: true
+                                        ) {
+                                            withAnimation(.spring()) {
+                                                showARShootingSettings.toggle()
+                                                showDotSettings = false
+                                                showCombineSettings = false
+                                            }
+                                        }
+                                        
+                                        if showARShootingSettings {
+                                            VStack(spacing: 8) {
+                                                Text("どの「かべ」に ちょうせん する？")
+                                                    .font(.system(.caption, design: .rounded))
+                                                    .fontWeight(.bold)
+                                                    .foregroundColor(.orange)
+                                                
+                                                VStack(spacing: 8) {
+                                                    HStack(spacing: 8) {
+                                                        DifficultyButton(title: "1けたのかべ", subtitle: "3〜8 など") {
+                                                            activeGame = .arShooting(start: Int.random(in: 1...5), count: 6)
+                                                        }
+                                                        DifficultyButton(title: "10のかべ", subtitle: "7〜12 など") {
+                                                            activeGame = .arShooting(start: Int.random(in: 6...9), count: 6)
+                                                        }
+                                                    }
+                                                    
+                                                    HStack(spacing: 8) {
+                                                        DifficultyButton(title: "十の位のかべ", subtitle: "26〜32, 55〜61") {
+                                                            let starts = [26, 36, 46, 55, 66, 76, 85]
+                                                            activeGame = .arShooting(start: starts.randomElement()!, count: 7)
+                                                        }
+                                                        DifficultyButton(title: "100のかべ", subtitle: "95〜102, 137〜144") {
+                                                            let starts = [95, 137, 236]
+                                                            activeGame = .arShooting(start: starts.randomElement()!, count: 8)
+                                                        }
+                                                    }
+                                                    
+                                                    DifficultyButton(title: "1000のかべ", subtitle: "995〜1002 など") {
+                                                        activeGame = .arShooting(start: Int.random(in: 993...999), count: 8)
+                                                    }
+                                                }
+                                                .padding(.top, 4)
+                                            }
+                                            .padding(10)
+                                            .background(Color.white.opacity(0.06))
+                                            .cornerRadius(20)
+                                            .transition(.move(edge: .top).combined(with: .opacity))
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    
+                                    // 3. あわせていくつ
                                     VStack(spacing: 0) {
                                         PlayMenuCard(
                                             title: "あわせていくつ (数の合成)",
@@ -145,6 +207,7 @@ struct PlayView: View {
                                             withAnimation(.spring()) {
                                                 showCombineSettings.toggle()
                                                 showDotSettings = false
+                                                showARShootingSettings = false
                                             }
                                         }
                                         
@@ -196,6 +259,7 @@ struct PlayView: View {
                                             withAnimation(.spring()) {
                                                 showDotSettings.toggle()
                                                 showCombineSettings = false
+                                                showARShootingSettings = false
                                             }
                                         }
                                         
@@ -240,7 +304,63 @@ struct PlayView: View {
                                         }
                                     }
                                     
-                                    // 2. あわせていくつ
+                                    // 2. ARすうじシューティング
+                                    VStack(spacing: 0) {
+                                        PlayMenuCard(
+                                            title: "ARすうじシューティング",
+                                            description: "カメラでおへやを見わたして、つぎの数字をさがしてビームでうとう！",
+                                            icon: "scope",
+                                            color: .orange
+                                        ) {
+                                            withAnimation(.spring()) {
+                                                showARShootingSettings.toggle()
+                                                showDotSettings = false
+                                                showCombineSettings = false
+                                            }
+                                        }
+                                        
+                                        if showARShootingSettings {
+                                            VStack(spacing: 12) {
+                                                Text("どの「かべ」に ちょうせん する？")
+                                                    .font(.system(.caption, design: .rounded))
+                                                    .fontWeight(.bold)
+                                                    .foregroundColor(.orange)
+                                                
+                                                VStack(spacing: 10) {
+                                                    HStack(spacing: 12) {
+                                                        DifficultyButton(title: "1けたのかべ", subtitle: "3〜8 など") {
+                                                            activeGame = .arShooting(start: Int.random(in: 1...5), count: 6)
+                                                        }
+                                                        DifficultyButton(title: "10のかべ", subtitle: "7〜12 など") {
+                                                            activeGame = .arShooting(start: Int.random(in: 6...9), count: 6)
+                                                        }
+                                                    }
+                                                    
+                                                    HStack(spacing: 12) {
+                                                        DifficultyButton(title: "十の位のかべ", subtitle: "26〜32, 55〜61") {
+                                                            let starts = [26, 36, 46, 55, 66, 76, 85]
+                                                            activeGame = .arShooting(start: starts.randomElement()!, count: 7)
+                                                        }
+                                                        DifficultyButton(title: "100のかべ", subtitle: "95〜102, 137〜144") {
+                                                            let starts = [95, 137, 236]
+                                                            activeGame = .arShooting(start: starts.randomElement()!, count: 8)
+                                                        }
+                                                    }
+                                                    
+                                                    DifficultyButton(title: "1000のかべ", subtitle: "995〜1002 など") {
+                                                        activeGame = .arShooting(start: Int.random(in: 993...999), count: 8)
+                                                    }
+                                                }
+                                                .padding(.top, 4)
+                                            }
+                                            .padding()
+                                            .background(Color.white.opacity(0.06))
+                                            .cornerRadius(20)
+                                            .transition(.move(edge: .top).combined(with: .opacity))
+                                        }
+                                    }
+                                    
+                                    // 3. あわせていくつ
                                     VStack(spacing: 0) {
                                         PlayMenuCard(
                                             title: "あわせていくつ (数の合成)",
@@ -251,6 +371,7 @@ struct PlayView: View {
                                             withAnimation(.spring()) {
                                                 showCombineSettings.toggle()
                                                 showDotSettings = false
+                                                showARShootingSettings = false
                                             }
                                         }
                                         
@@ -310,6 +431,10 @@ struct PlayView: View {
                 CombineModeView(level: level, targetNumber: target) { success in
                     activeGame = nil
                 }
+            case .arShooting(let start, let count):
+                ARShootingModeView(startNum: start, dotCount: count) { success in
+                    activeGame = nil
+                }
             }
         }
         .onAppear {
@@ -345,6 +470,18 @@ struct PlayView: View {
             }
             
             activeGame = .combine(level: level, target: request.number)
+            historyManager.retryRequest = nil
+            
+        case .arShooting:
+            let start = request.number
+            let count: Int
+            if start >= 990 { count = 8 }
+            else if start >= 90 { count = 8 }
+            else if start >= 20 { count = 7 }
+            else if start >= 6 { count = 6 }
+            else { count = 6 }
+            
+            activeGame = .arShooting(start: start, count: count)
             historyManager.retryRequest = nil
             
         default:

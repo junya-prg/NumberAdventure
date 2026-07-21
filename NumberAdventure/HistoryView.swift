@@ -303,6 +303,10 @@ struct HistoryView: View {
             modeColor = Color.green
             modeIcon = "⚖️"
             responsePrefix = "あわせた:"
+        case .arShooting:
+            modeColor = Color.orange
+            modeIcon = "🎯"
+            responsePrefix = "たいむ:"
         }
         
         return HStack(spacing: 12) {
@@ -416,7 +420,7 @@ struct HistoryView: View {
                 selectedTab = 0
             case .write:
                 selectedTab = 1
-            case .dotToDot, .combine:
+            case .dotToDot, .combine, .arShooting:
                 selectedTab = 2
             }
         }

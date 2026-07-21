@@ -183,6 +183,7 @@ struct DotToDotModeView: View {
                 }
                 .padding(.top, geometry.safeAreaInsets.top > 0 ? geometry.safeAreaInsets.top + 8 : 16)
                 .allowsHitTesting(true)
+                .ignoresSafeArea()
             }
             .onAppear {
                 generatePositions(in: geometry)

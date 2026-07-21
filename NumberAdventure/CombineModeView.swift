@@ -283,6 +283,31 @@ struct CombineModeView: View {
                         .padding(.horizontal)
                     } else {
                         // 縦向き時の従来のレイアウト
+                        
+                        // おだいの表示
+                        if level == 4 {
+                            Text("【 おだい 】 \(targetNumber)")
+                                .font(.system(.title3, design: .rounded))
+                                .fontWeight(.black)
+                                .foregroundColor(.yellow)
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 20)
+                                .background(Color.white.opacity(0.12))
+                                .cornerRadius(12)
+                                .padding(.top, 4)
+                        } else {
+                            Text("ひだり \(initialLeft) あわせて \(targetNumber) にするには？")
+                                .font(.system(.subheadline, design: .rounded))
+                                .fontWeight(.bold)
+                                .foregroundColor(.yellow)
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 16)
+                                .background(Color.white.opacity(0.1))
+                                .cornerRadius(12)
+                                .multilineTextAlignment(.center)
+                                .padding(.top, 4)
+                        }
+                        
                         if level == 4 {
                             // レベル4: 位取りのレイアウト (4つのカゴ)
                             HStack(spacing: 12) {

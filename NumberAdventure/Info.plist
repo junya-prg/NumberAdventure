@@ -12,5 +12,7 @@
 	<string>数字を読んだ声を判定するために音声認識を使用します。</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-2534039379765102~1174462351</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ARシューティングゲームで現実世界に数字を表示するためにカメラを使用します。</string>
 </dict>
 </plist>
