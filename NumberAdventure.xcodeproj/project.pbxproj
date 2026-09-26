@@ -279,6 +279,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NumberAdventure/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "すうじアドベンチャー";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ARシューティングゲームで現実世界に数字を表示するためにカメラを使用します。";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "近くのお友達や家族とARで対戦・協力プレイをするためにローカル通信を使用します。";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "数字を読む声を録音するためにマイクを使用します。";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "数字を読んだ声を判定するために音声認識を使用します。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -314,6 +318,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NumberAdventure/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "すうじアドベンチャー";
+				INFOPLIST_KEY_NSCameraUsageDescription = "ARシューティングゲームで現実世界に数字を表示するためにカメラを使用します。";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "近くのお友達や家族とARで対戦・協力プレイをするためにローカル通信を使用します。";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "数字を読む声を録音するためにマイクを使用します。";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "数字を読んだ声を判定するために音声認識を使用します。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

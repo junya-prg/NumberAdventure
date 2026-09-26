@@ -23,6 +23,7 @@ struct PlayView: View {
     @State private var showDotSettings = false
     @State private var showCombineSettings = false
     @State private var showARShootingSettings = false
+    @State private var showARBattleLobby = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -245,6 +246,20 @@ struct PlayView: View {
                                         }
                                     }
                                     .frame(maxWidth: .infinity)
+                                    
+                                    // 4. ARふたりであそぶ
+                                    VStack(spacing: 0) {
+                                        PlayMenuCard(
+                                            title: "ARふたりであそぶ (通信)",
+                                            description: "Bluetoothで近くのおともだちとつながる！あわせて10の協力や倍数・位取り対戦！",
+                                            icon: "person.2.wave.2.fill",
+                                            color: .purple,
+                                            isLandscape: true
+                                        ) {
+                                            showARBattleLobby = true
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity)
                                 }
                             } else {
                                 VStack(spacing: 20) {
@@ -408,6 +423,18 @@ struct PlayView: View {
                                             .transition(.move(edge: .top).combined(with: .opacity))
                                         }
                                     }
+                                    
+                                    // 4. ARふたりであそぶ
+                                    VStack(spacing: 0) {
+                                        PlayMenuCard(
+                                            title: "ARふたりであそぶ (通信対戦・協力)",
+                                            description: "近くのお友だちとBluetooth通信でつながる！\n「あわせて10」の協力や、「倍数」「位取り」のスピードバトル！",
+                                            icon: "person.2.wave.2.fill",
+                                            color: .purple
+                                        ) {
+                                            showARBattleLobby = true
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -435,6 +462,11 @@ struct PlayView: View {
                 ARShootingModeView(startNum: start, dotCount: count) { success in
                     activeGame = nil
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $showARBattleLobby) {
+            ARBattleLobbyView {
+                showARBattleLobby = false
             }
         }
         .onAppear {
